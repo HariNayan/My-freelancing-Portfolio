@@ -2,9 +2,8 @@
 
 A portfolio built to showcase my work in **Video Editing**, **Graphic Design**, **Motion Graphics**, and **Web Development**.
 
-## Live Demo
-
-[View Portfolio](https://hrajpattuncsm236616-eng.github.io/My-freelancing-Portfolio)
+Live Site
+www.harinayan.me
 
 
 ## What I Do
