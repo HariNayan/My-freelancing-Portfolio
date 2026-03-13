@@ -1,11 +1,57 @@
-This contains everything you need to run your app locally.
+# My Freelancing Portfolio
 
-## Run Locally
+A portfolio built to showcase my work in **Video Editing**, **Graphic Design**, **Motion Graphics**, and **Web Development**.
 
-**Prerequisites:**  Node.js
+## Live Demo
+
+[View Portfolio](https://hrajpattuncsm236616-eng.github.io/My-freelancing-Portfolio)
 
 
-1. Install dependencies:
-   `npm install`
-3. Run the app:
-   `npm run dev`
+## What I Do
+
+- 🎬 **Video Editing** — Reels, brand videos, YouTube content, and more
+- 🎨 **Graphic Design** — Logos, branding, social media creatives
+- 🌀 **Motion Graphics** — Animated visuals and title sequences
+- 💻 **Web Development** — Clean, responsive websites
+
+
+## Project Structure
+
+My-freelancing-Portfolio/
+├── components/
+│   ├── Header.tsx
+│   ├── Hero.tsx
+│   ├── About.tsx
+│   ├── Services.tsx
+│   ├── Portfolio.tsx
+│   ├── ProjectModal.tsx
+│   ├── Clients.tsx
+│   ├── Testimonials.tsx
+│   ├── Process.tsx
+│   ├── ToolsCarousel.tsx
+│   ├── Showreel.tsx
+│   ├── Contact.tsx
+│   └── Footer.tsx
+├── public/
+├── App.tsx
+├── index.tsx
+├── constants.tsx
+├── types.ts
+├── index.html
+├── vite.config.ts
+└── package.json
+```
+
+
+## Tech Stack
+
+React · TypeScript · Vite · GitHub Actions
+
+## Deployment
+
+Auto-deployed to GitHub Pages via GitHub Actions on every push to `main`.
+
+## Contact
+
+**Harinayan**
+GitHub: [@hrajpattuncsm236616-eng](https://github.com/hrajpattuncsm236616-eng)
