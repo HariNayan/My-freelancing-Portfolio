@@ -2,25 +2,49 @@ import React, { useState, useRef } from 'react';
 import { PROJECTS } from '../constants';
 import { ProjectCategory, Project } from '../types';
 import ProjectModal from './ProjectModal';
-import { ArrowUpRight, Play } from 'lucide-react';
+import { ArrowUpRight, Play, Volume2, VolumeX } from 'lucide-react';
 
 // YouTube Facade: shows thumbnail, loads iframe only on click (massive performance win)
 const VideoPreview = ({ project }: { project: Project }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const thumbnailUrl = `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!iframeRef.current?.contentWindow) return;
+    const command = isMuted ? 'unMute' : 'mute';
+    iframeRef.current.contentWindow.postMessage(
+      JSON.stringify({ event: 'command', func: command, args: [] }),
+      '*'
+    );
+    setIsMuted(prev => !prev);
+  };
 
   if (isLoaded) {
     return (
       <div className="relative w-full h-full bg-neutral-900">
         <iframe
+          ref={iframeRef}
           width="100%"
           height="100%"
-          src={`https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&mute=1&controls=1&loop=1&playlist=${project.youtubeId}&playsinline=1&rel=0&showinfo=0&modestbranding=1`}
+          src={`https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${project.youtubeId}&playsinline=1&rel=0&showinfo=0&modestbranding=1&enablejsapi=1`}
           title={project.title || 'Video Preview'}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           className="absolute inset-0 w-full h-full"
         ></iframe>
+
+        {/* Mute / Unmute Button */}
+        <button
+          onClick={toggleMute}
+          aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+          className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 bg-neutral-950/70 hover:bg-neutral-950/90 border border-neutral-600 hover:border-neutral-400 text-white text-[11px] font-semibold px-2.5 py-1.5 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-105 active:scale-95"
+        >
+          {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
+          {isMuted ? 'Unmute' : 'Mute'}
+        </button>
       </div>
     );
   }
