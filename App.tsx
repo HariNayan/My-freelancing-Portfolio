@@ -25,7 +25,6 @@ function App() {
         <Contact />
       </main>
       <Footer />
-      <Analytics />
     </div>
   );
 }
