@@ -55,7 +55,7 @@ const Contact: React.FC = () => {
               <div className="mt-8 md:mt-10">
                 <h4 className="text-gray-500 text-sm uppercase font-bold tracking-wider mb-4">Socials</h4>
                 <div className="flex gap-4">
-                  <a href="https://www.instagram.com/mantseditz/" className="w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-neutral-900 transition-colors">
+                  <a href="https://www.instagram.com/creo.mov/" className="w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-neutral-900 transition-colors">
                     <Instagram size={20} />
                   </a>
                   <a href="https://www.linkedin.com/in/harinayanrajpattun/" className="w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-neutral-900 transition-colors">
