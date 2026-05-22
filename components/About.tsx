@@ -26,11 +26,11 @@ const About: React.FC = () => {
                 <span className="text-sm text-gray-500">Years Exp.</span>
               </div>
               <div>
-                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">50+</span>
+                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">1000+</span>
                 <span className="text-sm text-gray-500">Projects</span>
               </div>
               <div>
-                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">10+</span>
+                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">20+</span>
                 <span className="text-sm text-gray-500">Happy Clients</span>
               </div>
             </div>

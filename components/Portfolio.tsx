@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { PROJECTS } from '../constants';
 import { ProjectCategory, Project } from '../types';
 import ProjectModal from './ProjectModal';
-import { ArrowUpRight, Play, Volume2, VolumeX } from 'lucide-react';
+import { Play, Volume2, VolumeX } from 'lucide-react';
 
 // YouTube Facade: shows thumbnail, loads iframe only on click (massive performance win)
 const VideoPreview = ({ project }: { project: Project }) => {
@@ -86,8 +86,9 @@ const Portfolio: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const videoProjects = PROJECTS.filter(p =>
-    p.category === ProjectCategory.VIDEO || (!p.category && p.youtubeId)
+    (p.category === ProjectCategory.VIDEO || (!p.category && p.youtubeId)) && !p.id.startsWith('s')
   );
+  const startupProjects = PROJECTS.filter(p => p.id.startsWith('s'));
   const graphicProjects = PROJECTS.filter(p =>
     p.category === ProjectCategory.GRAPHIC
   );
@@ -98,7 +99,7 @@ const Portfolio: React.FC = () => {
     const isGraphic = project.category === ProjectCategory.GRAPHIC;
 
     return (
-      <div className="group flex flex-col h-full">
+      <div className={`group flex flex-col h-full ${isVideo && !project.id.startsWith('s') ? 'max-w-xs mx-auto' : ''}`}>
         {/* Card Media Container */}
         <div
           className={`relative w-full bg-neutral-800 rounded-xl overflow-hidden border border-neutral-800 shadow-lg ${
@@ -107,33 +108,17 @@ const Portfolio: React.FC = () => {
         >
           {isVideo ? (
             <VideoPreview project={project} />
+          ) : project.thumbnail ? (
+            <img
+              src={project.thumbnail}
+              alt={project.title || 'Project Thumbnail'}
+              className="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
+              loading="lazy"
+              decoding="async"
+              onClick={isGraphic ? undefined : () => setSelectedProject(project)}
+            />
           ) : (
-            <>
-              <img
-                src={project.thumbnail}
-                alt={project.title || 'Project Thumbnail'}
-                className="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100 cursor-pointer"
-                loading="lazy"
-                decoding="async"
-                onClick={() => setSelectedProject(project)}
-              />
-
-              {!isGraphic && (
-                <div
-                  className="absolute inset-0 bg-neutral-950/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6 text-center backdrop-blur-sm cursor-pointer"
-                  onClick={() => setSelectedProject(project)}
-                >
-                  <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">
-                    {project.description && (
-                      <p className="text-gray-200 font-medium mb-4 leading-relaxed line-clamp-3">{project.description}</p>
-                    )}
-                    <div className="inline-flex items-center gap-2 text-white font-bold border-b border-blue-500 pb-0.5 hover:text-blue-400 transition-colors">
-                      View Case Study <ArrowUpRight size={16} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
+            <div className="w-full h-full flex items-center justify-center text-gray-600 text-sm">Add video link</div>
           )}
         </div>
 
@@ -143,8 +128,12 @@ const Portfolio: React.FC = () => {
             <div className="flex justify-between items-start gap-2">
               {project.title && (
                 <h3
-                  className="text-base xl:text-lg font-bold text-white group-hover:text-blue-400 transition-colors cursor-pointer leading-tight"
-                  onClick={() => setSelectedProject(project)}
+                  className={`text-base xl:text-lg font-bold text-white leading-tight ${
+                    (project.youtubeId || project.thumbnail) && !project.id.startsWith('s')
+                      ? 'group-hover:text-blue-400 transition-colors cursor-pointer'
+                      : ''
+                  }`}
+                  onClick={() => (project.youtubeId || project.thumbnail) && !project.id.startsWith('s') ? setSelectedProject(project) : undefined}
                 >
                   {project.title}
                 </h3>
@@ -168,10 +157,10 @@ const Portfolio: React.FC = () => {
         {/* Video Edits Section */}
         <div className="mb-20 md:mb-24">
           <div className="flex items-center gap-4 mb-8">
-            <h3 className="text-xl md:text-2xl font-display font-bold text-white">Video Edits</h3>
+            <h3 className="text-xl md:text-2xl font-display font-bold text-white">Short Videos</h3>
             <div className="h-px flex-1 bg-neutral-800"></div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 sm:gap-x-5 xl:gap-x-8 gap-y-6 sm:gap-y-10">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-5 xl:gap-x-8 gap-y-6 sm:gap-y-10">
             {videoProjects.map(project => (
               <div key={project.id}>
                 {renderProjectCard(project)}
@@ -179,6 +168,23 @@ const Portfolio: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Startup Work Section */}
+        {startupProjects.length > 0 && (
+          <div className="mb-20 md:mb-24">
+            <div className="flex items-center gap-4 mb-8">
+              <h3 className="text-xl md:text-2xl font-display font-bold text-white">Startup Work</h3>
+              <div className="h-px flex-1 bg-neutral-800"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {startupProjects.map(project => (
+                <div key={project.id}>
+                  {renderProjectCard(project)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Graphic Design Section */}
         <div>

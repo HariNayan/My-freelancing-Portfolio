@@ -5,66 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0a0a0a" />
     <title>Hari Nayan | Video Editor & Designer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Sora', 'sans-serif'],
-            },
-            colors: {
-              neutral: {
-                850: '#1f1f1f',
-                900: '#171717',
-                950: '#0a0a0a',
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Custom scrollbar for a premium feel */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #171717; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #404040; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #525252; 
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      
-      /* Infinite Scroll Animation */
-      @keyframes scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-scroll {
-        animation: scroll 40s linear infinite;
-      }
-      .pause-on-hover:hover .animate-scroll {
-        animation-play-state: paused;
-      }
-      /* Gradient masks for marquee */
-      .mask-gradient {
-        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-      }
-    </style>
-</head>
+  </head>
   <body class="bg-neutral-950 text-neutral-100 antialiased selection:bg-white/20">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

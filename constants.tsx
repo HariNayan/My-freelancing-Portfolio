@@ -9,62 +9,70 @@ import {
 } from 'lucide-react';
 
 export const PROJECTS: Project[] = [
-  // --- 8 VERTICAL VIDEO PROJECTS (Simplified) ---
+  // --- 6 VERTICAL VIDEO PROJECTS (Simplified) ---
   {
     id: 'v1',
-    subcategory: 'Fitness',
-    youtubeId: 'IKqYaALkXz4',
-    videoUrl: 'https://www.youtube.com/shorts/IKqYaALkXz4',
+    subcategory: 'AI & TECH',
+    youtubeId: 'wi10YaoVX78',
+    videoUrl: 'https://youtube.com/shorts/wi10YaoVX78',
     format: 'vertical',
   },
   {
     id: 'v2',
-    subcategory: 'Ai and Tech',
-    youtubeId: 'ZRX9fvNPVz8',
-    videoUrl: 'https://youtube.com/shorts/ZRX9fvNPVz8',
+    subcategory: 'AVIATION',
+    youtubeId: 'Om72QAs5ybA',
+    videoUrl: 'https://youtube.com/shorts/Om72QAs5ybA',
     format: 'vertical',
   },
   {
     id: 'v3',
-    subcategory: 'Educational',
-    youtubeId: 'ukcCgDOWFdw',
-    videoUrl: 'https://www.youtube.com/shorts/ukcCgDOWFdw',
+    subcategory: 'FITNESS',
+    youtubeId: '8_BwNlhxXDQ',
+    videoUrl: 'https://youtube.com/shorts/8_BwNlhxXDQ',
     format: 'vertical',
   },
   {
     id: 'v4',
-    subcategory: 'Startup',
+    subcategory: 'STARTUP',
     youtubeId: 'YPWHUoTok3I',
     videoUrl: 'https://www.youtube.com/shorts/YPWHUoTok3I',
     format: 'vertical',
   },
   {
     id: 'v5',
-    subcategory: 'Educational',
-    youtubeId: 'b0AMVgl9HiU',
-    videoUrl: 'https://www.youtube.com/shorts/b0AMVgl9HiU',
+    subcategory: 'AI & TECH',
+    youtubeId: '69x4OXNw3I8',
+    videoUrl: 'https://youtube.com/shorts/69x4OXNw3I8',
     format: 'vertical',
   },
   {
     id: 'v6',
-    subcategory: 'Environment',
-    youtubeId: '-5IkwP-DFnU',
-    videoUrl: 'https://www.youtube.com/shorts/-5IkwP-DFnU',
-    format: 'vertical',
-  },
-  {
-    id: 'v7',
-    subcategory: 'Course',
+    subcategory: 'COURSE',
     youtubeId: 'V5absz3mjis',
-    videoUrl: 'https://www.youtube.com/shorts/V5absz3mjis',
+    videoUrl: 'https://youtube.com/shorts/V5absz3mjis',
     format: 'vertical',
   },
+
+  // --- STARTUP PROJECTS ---
   {
-    id: 'v8',
-    subcategory: 'Ai and Tech',
-    youtubeId: 'wi10YaoVX78',
-    videoUrl: 'https://youtube.com/shorts/wi10YaoVX78',
-    format: 'vertical',
+    id: 's1',
+    category: ProjectCategory.VIDEO,
+    title: 'Slashy X Ganola Demo Video',
+    subcategory: 'YC Startup',
+    youtubeId: 'Omp8y-GI4kY',
+    format: 'horizontal',
+    description: 'Demo video for YC-backed startup Slashy.',
+    client: 'Slashy (YC)',
+  },
+  {
+    id: 's2',
+    category: ProjectCategory.VIDEO,
+    title: 'Slashy To-Dos Demo Video',
+    subcategory: 'YC Startup',
+    youtubeId: '00Znaw4x9EE',
+    format: 'horizontal',
+    description: 'To-Do demo for Slashy.',
+    client: 'Slashy (YC)',
   },
 
   // --- GRAPHIC DESIGN PROJECTS (Vertical Only) ---
@@ -170,7 +178,7 @@ export const CLIENTS: Client[] = [
     handle: '@manikk.ai',
     avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsbfngAlH321PsEJAldZRjHPJ590FwpdDLcw&s',
     link: 'https://www.instagram.com/manikk.ai/',
-    stats: '54K Followers'
+    stats: '105K Followers'
   },
   {
     id: '3',
@@ -190,30 +198,31 @@ export const CLIENTS: Client[] = [
     link: 'https://www.instagram.com/techiemant/',
     stats: '2.6K Followers'
   },
+];
+
+export const STARTUP_CLIENTS = [
   {
-    id: '5',
-    name: 'Fitness 360',
-    platform: 'YouTube',
-    handle: 'Fit360',
-    avatar: 'https://picsum.photos/id/96/200/200',
-    link: '#',
-    stats: '500K Subscribers'
+    id: 's1',
+    name: 'Slashy (YC S25)',
+    handle: 'slashy.com',
+    link: 'https://www.slashy.com/',
+    tag: 'YC-Backed Startup',
+    logo: 'https://slashy.ai/favicon.ico',
   },
   {
-    id: '6',
-    name: 'Travel Diaries',
-    platform: 'Instagram',
-    handle: '@travel.diaries',
-    avatar: 'https://picsum.photos/id/103/200/200',
-    link: '#',
-    stats: '320K Followers'
-  }
+    id: 's2',
+    name: 'Lazestore',
+    handle: 'Ecommerce Clothing Brand',
+    link: 'https://www.lazestore.in/',
+    tag: 'Ecommerce Store',
+    logo: 'public/logo BlWh.png',
+  },
 ];
 
 export const PROJECT_STATS: StatData[] = [
   { name: 'Short-form', value: 45 },
   { name: 'YouTube', value: 30 },
-  { name: 'Corporate', value: 15 },
+  { name: 'Startup', value: 15 },
   { name: 'Branding', value: 10 },
 ];
 
@@ -239,8 +248,4 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: 'We needed a brand identity that felt organic yet professional. Hari nailed the brief on the first try. Highly recommended!'
   }
 ];
-
-
-
-
 

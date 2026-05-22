@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
-import { Mail, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Instagram, Linkedin, CheckCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert("Thanks for reaching out! This is a demo form.");
+    setStatus('sending');
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('https://formspree.io/f/mlgvbyjk', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (res.ok) {
+        setStatus('success');
+        form.reset();
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -59,15 +67,13 @@ const Contact: React.FC = () => {
 
            {/* Form */}
            <div className="md:col-span-3 p-6 md:p-10">
-              <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
-                 <div>
+                 <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
+                  <div>
                    <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Name</label>
                    <input 
                     type="text" 
                     id="name" 
                     name="name"
-                    value={formData.name}
-                    onChange={handleChange}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
                     placeholder="John Doe"
                     required
@@ -79,8 +85,6 @@ const Contact: React.FC = () => {
                     type="email" 
                     id="email" 
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
                     placeholder="john@example.com"
                     required
@@ -91,20 +95,27 @@ const Contact: React.FC = () => {
                    <textarea 
                     id="message" 
                     name="message"
-                    value={formData.message}
-                    onChange={handleChange}
                     rows={4}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors resize-none"
                     placeholder="Tell me about your project..."
                     required
                    ></textarea>
                  </div>
-                 <button 
-                  type="submit" 
-                  className="w-full bg-white text-neutral-950 font-bold py-4 xl:py-5 rounded-lg hover:bg-gray-200 transition-colors"
-                 >
-                   Send Message
-                 </button>
+                  <button 
+                   type="submit" 
+                   disabled={status === 'sending'}
+                   className="w-full bg-white text-neutral-950 font-bold py-4 xl:py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === 'sending' ? 'Sending...' : 'Send Message'}
+                  </button>
+                  {status === 'success' && (
+                    <div className="flex items-center gap-2 text-green-400 text-sm">
+                      <CheckCircle size={16} /> Message sent! I'll get back to you soon.
+                    </div>
+                  )}
+                  {status === 'error' && (
+                    <p className="text-red-400 text-sm">Something went wrong. Please try again or email me directly.</p>
+                  )}
               </form>
            </div>
 
