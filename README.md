@@ -45,12 +45,3 @@ My-freelancing-Portfolio/
 ## Tech Stack
 
 React · TypeScript · Vite · GitHub Actions
-
-## Deployment
-
-Auto-deployed to GitHub Pages via GitHub Actions on every push to `main`.
-
-## Contact
-
-**Harinayan**
-GitHub: [@hrajpattuncsm236616-eng](https://github.com/hrajpattuncsm236616-eng)
