@@ -215,7 +215,7 @@ export const STARTUP_CLIENTS = [
     handle: 'Ecommerce Clothing Brand',
     link: 'https://www.lazestore.in/',
     tag: 'Ecommerce Store',
-    logo: 'public/logo BlWh.png',
+    logo: '/logo%20BlWh.png',
   },
 ];
 
