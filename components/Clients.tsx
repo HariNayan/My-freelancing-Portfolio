@@ -1,7 +1,14 @@
 import React from 'react';
 import { CLIENTS, STARTUP_CLIENTS } from '../constants';
-import { Youtube, Instagram, ExternalLink, Users, Building2 } from 'lucide-react';
+import { Youtube, Instagram, ExternalLink, Users, Building2, ShoppingBag } from 'lucide-react';
 import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
+
+const YCLogo: React.FC<{ size?: number }> = ({ size = 13 }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" className="shrink-0 rounded-[3px]" aria-label="Y Combinator">
+    <rect width="64" height="64" fill="#FB651E" />
+    <path d="M18 13 L32 35 L46 13 M32 35 L32 52" stroke="#fff" strokeWidth="6" fill="none" />
+  </svg>
+);
 
 const Clients: React.FC = () => {
   return (
@@ -96,7 +103,11 @@ const Clients: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-neutral-900">
-                  <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider border border-neutral-800 px-2 py-0.5 rounded-full">{client.tag}</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wider border border-neutral-800 px-2 py-0.5 rounded-full">
+                    {client.tag.includes('YC') && <YCLogo />}
+                    {client.tag.includes('Ecommerce') && <ShoppingBag size={13} className="shrink-0 text-gray-500" />}
+                    {client.tag}
+                  </span>
                   <span className="text-xs font-medium text-neutral-600 uppercase tracking-wider group-hover:text-neutral-400 transition-colors">
                     Visit Website
                   </span>

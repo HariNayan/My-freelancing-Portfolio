@@ -153,7 +153,7 @@ const Portfolio: React.FC = () => {
         <Reveal className="mb-12 md:mb-16">
           <Eyebrow index="01" label="Work" />
           <h2 className="text-3xl md:text-4xl xl:text-5xl font-display font-bold text-white mt-4 mb-4">Selected Works</h2>
-          <p className="text-gray-400 max-w-xl">Explore my diverse range of projects, from high-retention video editing to impactful brand identities.</p>
+          <p className="text-gray-400 max-w-xl">Selected work across high-retention edits, startup launches, and brand design.</p>
         </Reveal>
 
         {/* Video Edits Section */}

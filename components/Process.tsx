@@ -39,7 +39,7 @@ const Process: React.FC = () => {
     <section id="process" className="py-16 md:py-24 xl:py-32 bg-neutral-900 border-y border-neutral-800 px-6">
       <div className="container mx-auto max-w-6xl">
         <Reveal className="text-center mb-12 md:mb-16">
-          <Eyebrow index="03" label="How I Work" center />
+          <Eyebrow index="03" label="How We Work" center />
           <h2 className="text-3xl md:text-4xl xl:text-5xl font-display font-bold text-white mt-3 mb-4">Process</h2>
           <p className="text-gray-400 max-w-xl mx-auto">A streamlined workflow designed for speed and quality.</p>
         </Reveal>

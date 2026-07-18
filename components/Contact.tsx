@@ -37,7 +37,7 @@ const Contact: React.FC = () => {
         <Reveal className="text-center mb-10 md:mb-12">
           <Eyebrow index="06" label="Contact" center />
           <h2 className="text-3xl xl:text-5xl font-display font-bold text-white mt-4 mb-4">Let's Work Together</h2>
-          <p className="text-gray-400">I'm currently available for freelance projects. Send me a message and let's discuss your vision.</p>
+          <p className="text-gray-400">Tell us about your project — we usually reply within 24 hours.</p>
         </Reveal>
 
         <Reveal delay={0.1} className="grid grid-cols-1 md:grid-cols-5 gap-0 bg-neutral-900 rounded-2xl overflow-hidden shadow-2xl border border-neutral-800">

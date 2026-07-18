@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <footer className="bg-neutral-950 py-8 xl:py-12 border-t border-neutral-900">
       <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-neutral-600 text-sm">
-          &copy; {new Date().getFullYear()} Harinayan. All rights reserved.
+          &copy; {new Date().getFullYear()} NAYAN Studio. All rights reserved.
         </p>
         <div className="flex items-center gap-4">
           <a href="https://www.instagram.com/creo.mov/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-white transition-colors">

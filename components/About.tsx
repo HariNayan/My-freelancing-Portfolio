@@ -12,13 +12,13 @@ const About: React.FC = () => {
           {/* Content */}
           <Reveal>
             <Eyebrow index="04" label="About" />
-            <h2 className="text-3xl font-display font-bold text-white mt-4 mb-6">About Hari</h2>
+            <h2 className="text-3xl font-display font-bold text-white mt-4 mb-6">The Studio</h2>
             <div className="space-y-4 text-gray-400 leading-relaxed text-base xl:text-xl">
               <p>
-                I'm a multidisciplinary creative with a passion for visual storytelling. With over 3 years of experience in both video editing and graphic design, I bridge the gap between static and moving visuals.
+                NAYAN is a creative studio founded by Hari Nayan, working where video meets design. For over three years we've produced short-form edits, motion graphics, and brand visuals for creators and startups.
               </p>
               <p>
-                My philosophy is simple: design should not just look good; it should work. Whether it's maximizing viewer retention on YouTube or creating a memorable brand identity, every pixel and frame serves a purpose.
+                Everything we make has a job to do: an edit holds viewers to the end, a thumbnail earns the click, a brand gets remembered. If it doesn't move a number, it doesn't ship.
               </p>
             </div>
 

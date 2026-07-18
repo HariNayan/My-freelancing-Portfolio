@@ -81,7 +81,7 @@ const Header: React.FC = () => {
             href="#contact"
             className="ml-2 px-5 py-2 bg-white text-neutral-950 text-sm font-bold rounded-full hover:bg-gray-200 transition-colors duration-300"
           >
-            Work With Me
+            Start a Project
           </a>
         </nav>
 
@@ -118,7 +118,7 @@ const Header: React.FC = () => {
           onClick={() => setIsMobileMenuOpen(false)}
           className="mt-2 w-full text-center px-5 py-3 bg-white text-neutral-950 font-bold rounded-lg hover:bg-gray-200 transition-colors"
         >
-            Work With Me
+            Start a Project
         </a>
       </div>
     </header>

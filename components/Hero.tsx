@@ -70,7 +70,7 @@ const Hero: React.FC = () => {
             variants={wordVariants}
             className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light leading-relaxed"
           >
-            Professional video editing and graphic design that transforms raw ideas into premium, high-impact visuals.
+            A creative studio producing short-form video, motion graphics, and brand identity for creators and YC-backed startups.
           </motion.p>
 
           <motion.div
@@ -91,7 +91,7 @@ const Hero: React.FC = () => {
                 href="#contact"
                 className="block w-full sm:w-auto px-8 py-4 xl:py-5 xl:px-10 xl:text-lg bg-transparent border border-neutral-700 text-white font-semibold rounded-lg hover:bg-neutral-800 hover:border-neutral-500 transition-colors duration-300 backdrop-blur-sm text-center"
               >
-                Work With Me
+                Start a Project
               </a>
             </Magnetic>
           </motion.div>
