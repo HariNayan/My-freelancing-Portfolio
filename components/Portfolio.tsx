@@ -3,7 +3,7 @@ import { PROJECTS } from '../constants';
 import { ProjectCategory, Project } from '../types';
 import ProjectModal from './ProjectModal';
 import { Play, Volume2, VolumeX } from 'lucide-react';
-import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
+import { Reveal, Stagger, Item, Eyebrow, ScrubScale } from './Reveal';
 
 // YouTube Facade: shows thumbnail, loads iframe only on click (massive performance win)
 const VideoPreview = ({ project }: { project: Project }) => {
@@ -100,7 +100,7 @@ const Portfolio: React.FC = () => {
     const isGraphic = project.category === ProjectCategory.GRAPHIC;
 
     return (
-      <div className={`group flex flex-col h-full ${isVideo && !project.id.startsWith('s') ? 'max-w-xs mx-auto' : ''}`}>
+      <ScrubScale className={`group flex flex-col h-full ${isVideo && !project.id.startsWith('s') ? 'max-w-xs mx-auto' : ''}`}>
         {/* Card Media Container */}
         <div
           className={`relative w-full bg-neutral-800 rounded-xl overflow-hidden border border-neutral-800 shadow-lg ${
@@ -131,7 +131,7 @@ const Portfolio: React.FC = () => {
                 <h3
                   className={`text-base xl:text-lg font-bold text-white leading-tight ${
                     (project.youtubeId || project.thumbnail) && !project.id.startsWith('s')
-                      ? 'group-hover:text-blue-400 transition-colors cursor-pointer'
+                      ? 'group-hover:text-gray-400 transition-colors cursor-pointer'
                       : ''
                   }`}
                   onClick={() => (project.youtubeId || project.thumbnail) && !project.id.startsWith('s') ? setSelectedProject(project) : undefined}
@@ -142,7 +142,7 @@ const Portfolio: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </ScrubScale>
     );
   };
 
@@ -152,7 +152,7 @@ const Portfolio: React.FC = () => {
 
         <Reveal className="mb-12 md:mb-16">
           <Eyebrow index="01" label="Work" />
-          <h2 className="text-3xl md:text-4xl xl:text-5xl font-display font-bold text-white mt-4 mb-4">Selected Works</h2>
+          <h2 className="text-3xl md:text-5xl xl:text-6xl font-display font-bold text-white mt-4 mb-4">Selected Works</h2>
           <p className="text-gray-400 max-w-xl">Selected work across high-retention edits, startup launches, and brand design.</p>
         </Reveal>
 

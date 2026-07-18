@@ -3,8 +3,15 @@ import { Instagram, Linkedin } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-neutral-950 py-8 xl:py-12 border-t border-neutral-900">
-      <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <footer className="bg-neutral-950 pt-10 pb-8 xl:pb-12 border-t border-neutral-900 overflow-hidden">
+      {/* Giant ghost wordmark */}
+      <div className="container mx-auto px-6" aria-hidden>
+        <div className="font-display font-bold leading-[0.85] tracking-tight select-none text-neutral-800 text-[19vw] whitespace-nowrap">
+          NAYAN<span className="text-neutral-700">.</span>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-neutral-600 text-sm">
           &copy; {new Date().getFullYear()} NAYAN Studio. All rights reserved.
         </p>
@@ -15,9 +22,6 @@ const Footer: React.FC = () => {
           <a href="https://www.linkedin.com/in/harinayanrajpattun/" target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-white transition-colors">
             <Linkedin size={18} />
           </a>
-          <div className="w-px h-4 bg-neutral-800"></div>
-          <a href="#" className="text-neutral-600 hover:text-white text-xs uppercase tracking-wider transition-colors">Privacy</a>
-          <a href="#" className="text-neutral-600 hover:text-white text-xs uppercase tracking-wider transition-colors">Terms</a>
         </div>
       </div>
     </footer>

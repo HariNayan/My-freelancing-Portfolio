@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, animate, useInView, useReducedMotion, useSpring } from 'motion/react';
+import { motion, animate, useInView, useReducedMotion, useSpring, useScroll, useTransform } from 'motion/react';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -113,6 +113,24 @@ export const CountUp: React.FC<{ to: number; suffix?: string; className?: string
       {value}
       {suffix}
     </span>
+  );
+};
+
+// Scroll-scrubbed settle: scales from `from` down to 1 as the element
+// travels from the bottom of the viewport to its center (Apple-style).
+export const ScrubScale: React.FC<{ children: React.ReactNode; className?: string; from?: number }> = ({
+  children,
+  className,
+  from = 1.06,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] });
+  const scale = useTransform(scrollYProgress, [0, 1], [from, 1]);
+  return (
+    <motion.div ref={ref} style={reduce ? undefined : { scale }} className={className}>
+      {children}
+    </motion.div>
   );
 };
 

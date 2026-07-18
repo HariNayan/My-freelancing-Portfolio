@@ -9,16 +9,27 @@ interface ProjectModalProps {
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   
-  // Lock body scroll
+  // Lock body scroll and close on Escape
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
     };
-  }, []);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onClose]);
 
-  // Construct header image source
+  // Construct header image source; maxresdefault 404s for some videos,
+  // so fall back to hqdefault on error.
   const headerImage = project.thumbnail || (project.youtubeId ? `https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg` : '');
+  const handleHeaderImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (project.youtubeId && !e.currentTarget.src.includes('hqdefault')) {
+      e.currentTarget.src = `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+    }
+  };
 
   const isMinimal = !project.overview && !project.role;
 
@@ -31,11 +42,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
       ></div>
 
       {/* Modal Content */}
-      <div className="relative bg-neutral-900 w-full max-w-5xl xl:max-w-7xl max-h-[90vh] overflow-y-auto touch-pan-y rounded-2xl shadow-2xl border border-neutral-800 flex flex-col">
+      <div data-lenis-prevent className="relative bg-neutral-900 w-full max-w-5xl xl:max-w-7xl max-h-[90vh] overflow-y-auto touch-pan-y rounded-2xl shadow-2xl border border-neutral-800 flex flex-col">
         
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
+          aria-label="Close project details"
           className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2 bg-neutral-800/50 hover:bg-neutral-700 rounded-full text-white transition-colors backdrop-blur-md"
         >
           <X size={22} />
@@ -44,9 +56,10 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
         {/* Media Header */}
         <div className={`w-full bg-neutral-800 relative shrink-0 ${isMinimal && project.format === 'vertical' ? 'h-auto aspect-video flex items-center justify-center py-10' : 'h-56 sm:h-72 xl:h-[28rem]'}`}>
            {!isMinimal && headerImage && (
-             <img 
-              src={headerImage} 
-              alt={project.title || 'Project'} 
+             <img
+              src={headerImage}
+              alt={project.title || 'Project'}
+              onError={handleHeaderImageError}
               className="w-full h-full object-cover opacity-50"
              />
            )}
@@ -55,7 +68,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
            {!isMinimal && (
              <div className="absolute bottom-0 left-0 w-full p-6 md:p-12">
                 {project.subcategory && (
-                  <span className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-500/10 border border-blue-500/20 rounded-full">
+                  <span className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-neutral-300 uppercase bg-neutral-500/10 border border-neutral-400/20 rounded-full">
                     {project.subcategory}
                   </span>
                 )}
@@ -131,11 +144,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                      </div>
                   </div>
                 )}
-                {!project.youtubeId && (
-                   <div className="p-12 text-center text-gray-500 italic">
-                     [ High-Res Image Gallery Placeholder ]
-                   </div>
-                )}
               </div>
 
               {/* Right Column: Details */}
@@ -171,10 +179,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                    </div>
                  </div>
 
-                 <button className="w-full py-4 bg-white text-neutral-950 font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                   Hire Me for Similar Work
+                 <a
+                   href="#contact"
+                   onClick={onClose}
+                   className="w-full py-4 bg-white text-neutral-950 font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                 >
+                   Start a Similar Project
                    <ArrowRight size={18} />
-                 </button>
+                 </a>
               </div>
             </div>
           </div>

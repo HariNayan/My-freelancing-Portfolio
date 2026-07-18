@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
 import { Magnetic } from './Reveal';
@@ -7,6 +7,44 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const line1 = ['Visual', 'Storytelling', 'for'];
 const line2 = ['Creators', '&', 'Brands'];
+
+// Real work shown behind the hero: design thumbnails + shorts covers
+const WORK_THUMBS = [
+  '/back-to-fitness.webp',
+  '/fly-by-wire.webp',
+  '/tmu-thumbnail.webp',
+  '/vdgs-thumbnail.webp',
+  ...['wi10YaoVX78', 'Om72QAs5ybA', '8_BwNlhxXDQ', 'YPWHUoTok3I', '69x4OXNw3I8', 'V5absz3mjis'].map(
+    (id) => `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+  ),
+];
+
+// 4 distinct-ish images per column, offset so columns differ.
+const collageColumn = (offset: number) =>
+  Array.from({ length: 4 }, (_, i) => WORK_THUMBS[(offset * 3 + i * 2) % WORK_THUMBS.length]);
+
+const CollageColumn: React.FC<{ imgs: string[]; reverse?: boolean; className?: string }> = ({
+  imgs,
+  reverse,
+  className,
+}) => (
+  <div className={`flex-1 overflow-hidden ${className ?? ''}`}>
+    {/* base rendered exactly twice → seamless -50% loop, minimal nodes */}
+    <div className={`flex flex-col gap-4 ${reverse ? 'animate-collage-rev' : 'animate-collage'}`}>
+      {[...imgs, ...imgs].map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt=""
+          aria-hidden
+          className="w-full aspect-[3/4] object-cover rounded-xl grayscale"
+          loading="eager"
+          decoding="async"
+        />
+      ))}
+    </div>
+  </div>
+);
 
 const wordVariants = {
   hidden: { opacity: 0, y: 34, filter: 'blur(8px)' },
@@ -24,20 +62,41 @@ const Hero: React.FC = () => {
   const { scrollY } = useScroll();
   const contentY = useTransform(scrollY, [0, 600], [0, reduce ? 0 : 130]);
   const contentOpacity = useTransform(scrollY, [0, 450], [1, 0]);
+  const contentScale = useTransform(scrollY, [0, 600], [1, reduce ? 1 : 0.92]);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Pause the drifting collage while the hero is off-screen.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => document.documentElement.classList.toggle('collage-paused', !entry.isIntersecting),
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-neutral-950">
-      {/* Background: drifting glows + grain + vignette */}
-      <div className="absolute inset-0 z-0">
+    <section ref={sectionRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-neutral-950">
+      {/* Background: drifting collage of real work + glows + grain + vignette */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="hero-collage absolute -inset-x-10 -inset-y-24 flex gap-4 opacity-25 -rotate-3 scale-110">
+          <CollageColumn imgs={collageColumn(0)} />
+          <CollageColumn imgs={collageColumn(1)} reverse />
+          <CollageColumn imgs={collageColumn(2)} reverse className="hidden md:block" />
+          <CollageColumn imgs={collageColumn(3)} className="hidden md:block" />
+        </div>
+        <div className="absolute inset-0 bg-neutral-950/55"></div>
         <div className="hero-glow hero-glow-1"></div>
         <div className="hero-glow hero-glow-2"></div>
         <div className="absolute inset-0 grain-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-neutral-950/80"></div>
       </div>
 
       {/* Content */}
       <motion.div
-        style={{ y: contentY, opacity: contentOpacity }}
+        style={{ y: contentY, opacity: contentOpacity, scale: contentScale }}
         className="relative z-10 text-center px-6 max-w-4xl xl:max-w-6xl mx-auto mt-20 md:mt-16"
       >
         <motion.div

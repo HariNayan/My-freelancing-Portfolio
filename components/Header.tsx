@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion } from 'motion/react';
 
+// Order matches the sections' order on the page so the scrollspy
+// underline moves linearly.
 const navLinks = [
   { name: 'Work', href: '#portfolio', id: 'portfolio' },
   { name: 'Services', href: '#services', id: 'services' },
-  { name: 'About', href: '#about', id: 'about' },
   { name: 'Process', href: '#process', id: 'process' },
+  { name: 'About', href: '#about', id: 'about' },
   { name: 'Contact', href: '#contact', id: 'contact' },
 ];
 

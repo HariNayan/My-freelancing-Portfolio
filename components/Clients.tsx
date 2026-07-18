@@ -16,7 +16,7 @@ const Clients: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         <Reveal className="text-center mb-12 md:mb-16">
           <Eyebrow index="05" label="Clients" center />
-          <h2 className="text-3xl font-display font-bold text-white mt-4 mb-4">Trusted By Creators</h2>
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-white mt-4 mb-4">Trusted By Creators</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Collaborating with top talent across YouTube and Social Media to deliver high-impact visuals.</p>
         </Reveal>
 
@@ -27,7 +27,7 @@ const Clients: React.FC = () => {
               rel="noopener noreferrer"
               className="group block bg-neutral-950 p-6 rounded-xl border border-neutral-800 hover:border-neutral-600 transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
               <div className="flex items-center gap-4 md:gap-5 mb-6">
                 <div className="relative shrink-0">
@@ -83,7 +83,7 @@ const Clients: React.FC = () => {
                 rel="noopener noreferrer"
                 className="group block bg-neutral-950 p-6 rounded-xl border border-neutral-800 hover:border-neutral-600 transition-all duration-300 hover:-translate-y-1 active:scale-95 relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div className="flex items-center gap-4 md:gap-5 mb-6">
                   <div className="w-14 h-14 xl:w-20 xl:h-20 rounded-xl bg-neutral-800 flex items-center justify-center text-gray-400 group-hover:text-white transition-colors shrink-0 overflow-hidden">

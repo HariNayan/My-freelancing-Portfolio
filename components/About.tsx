@@ -12,10 +12,10 @@ const About: React.FC = () => {
           {/* Content */}
           <Reveal>
             <Eyebrow index="04" label="About" />
-            <h2 className="text-3xl font-display font-bold text-white mt-4 mb-6">The Studio</h2>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mt-4 mb-6">The Studio</h2>
             <div className="space-y-4 text-gray-400 leading-relaxed text-base xl:text-xl">
               <p>
-                NAYAN is a creative studio founded by Hari Nayan, working where video meets design. For over three years we've produced short-form edits, motion graphics, and brand visuals for creators and startups.
+                NAYAN is a creative studio founded by Hari Nayan, working where video meets design. For over four years we've produced short-form edits, motion graphics, and brand visuals for creators and startups.
               </p>
               <p>
                 Everything we make has a job to do: an edit holds viewers to the end, a thumbnail earns the click, a brand gets remembered. If it doesn't move a number, it doesn't ship.
@@ -24,11 +24,11 @@ const About: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-4 xl:gap-12 mt-12 border-t border-neutral-800 pt-8">
               <div>
-                <CountUp to={3} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
+                <CountUp to={4} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
                 <span className="text-sm text-gray-500">Years Exp.</span>
               </div>
               <div>
-                <CountUp to={1000} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
+                <CountUp to={999} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
                 <span className="text-sm text-gray-500">Projects</span>
               </div>
               <div>

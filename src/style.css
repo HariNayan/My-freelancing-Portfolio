@@ -6,22 +6,90 @@
   --color-neutral-850: #1f1f1f;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   REFINED DARK PALETTE
+   The UI is built on the neutral/gray ramp + white/black. We remap
+   those variables (unlayered, so they beat Tailwind's @theme
+   defaults) to a refined true-neutral scale: cleaner borders,
+   deeper surface separation. gray-* is aliased to neutral-* to
+   unify the previously mixed usage into one scale.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #3d3d3d;
+  --color-neutral-800: #2a2a2a;
+  --color-neutral-850: #1c1c1c;
+  --color-neutral-900: #151515;
+  --color-neutral-950: #0a0a0a;
+
+  --color-gray-100: var(--color-neutral-100);
+  --color-gray-200: var(--color-neutral-200);
+  --color-gray-300: var(--color-neutral-300);
+  --color-gray-400: var(--color-neutral-400);
+  --color-gray-500: var(--color-neutral-500);
+  --color-gray-600: var(--color-neutral-600);
+  --color-gray-700: var(--color-neutral-700);
+
+  /* theme-dependent effects */
+  --hero-glow-color: #ffffff;
+  --outline-stroke: rgba(255, 255, 255, 0.26);
+  --scrollbar-track: #151515;
+  --scrollbar-thumb: #3d3d3d;
+  --scrollbar-thumb-hover: #525252;
+  --grain-opacity: 0.05;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #171717;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #404040;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #525252;
+  background: var(--scrollbar-thumb-hover);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Outlined display type (marquee, ghost headings) */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--outline-stroke);
 }
 
 @keyframes scroll {
@@ -46,7 +114,7 @@ html {
 .hero-glow {
   position: absolute;
   border-radius: 9999px;
-  background: #ffffff;
+  background: var(--hero-glow-color);
   filter: blur(120px);
   will-change: transform;
 }
@@ -80,8 +148,36 @@ html {
 .grain-overlay {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   background-repeat: repeat;
-  opacity: 0.05;
+  opacity: var(--grain-opacity);
   pointer-events: none;
+}
+
+/* Hero work-collage: slow vertical drift */
+@keyframes collage-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes collage-down {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
+.animate-collage {
+  animation: collage-up 70s linear infinite;
+  will-change: transform;
+}
+
+.animate-collage-rev {
+  animation: collage-down 80s linear infinite;
+  will-change: transform;
+}
+
+/* Stop the hero collage from animating once it's scrolled out of view
+   (class toggled by an IntersectionObserver) — saves background frames. */
+.collage-paused .animate-collage,
+.collage-paused .animate-collage-rev {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -90,7 +186,9 @@ html {
   }
   .animate-scroll,
   .hero-glow-1,
-  .hero-glow-2 {
+  .hero-glow-2,
+  .animate-collage,
+  .animate-collage-rev {
     animation: none;
   }
 }
