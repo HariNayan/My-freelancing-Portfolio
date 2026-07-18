@@ -3,6 +3,7 @@ import { PROJECTS } from '../constants';
 import { ProjectCategory, Project } from '../types';
 import ProjectModal from './ProjectModal';
 import { Play, Volume2, VolumeX } from 'lucide-react';
+import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
 
 // YouTube Facade: shows thumbnail, loads iframe only on click (massive performance win)
 const VideoPreview = ({ project }: { project: Project }) => {
@@ -149,56 +150,57 @@ const Portfolio: React.FC = () => {
     <section id="portfolio" className="py-16 md:py-24 xl:py-32 bg-neutral-900 border-y border-neutral-800 overflow-hidden">
       <div className="container mx-auto px-6 max-w-7xl">
 
-        <div className="mb-12 md:mb-16">
-          <h2 className="text-3xl md:text-4xl xl:text-5xl font-display font-bold text-white mb-4">Selected Works</h2>
+        <Reveal className="mb-12 md:mb-16">
+          <Eyebrow index="01" label="Work" />
+          <h2 className="text-3xl md:text-4xl xl:text-5xl font-display font-bold text-white mt-4 mb-4">Selected Works</h2>
           <p className="text-gray-400 max-w-xl">Explore my diverse range of projects, from high-retention video editing to impactful brand identities.</p>
-        </div>
+        </Reveal>
 
         {/* Video Edits Section */}
         <div className="mb-20 md:mb-24">
-          <div className="flex items-center gap-4 mb-8">
+          <Reveal className="flex items-center gap-4 mb-8">
             <h3 className="text-xl md:text-2xl font-display font-bold text-white">Short Videos</h3>
             <div className="h-px flex-1 bg-neutral-800"></div>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-5 xl:gap-x-8 gap-y-6 sm:gap-y-10">
+          </Reveal>
+          <Stagger className="grid grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-5 xl:gap-x-8 gap-y-6 sm:gap-y-10">
             {videoProjects.map(project => (
-              <div key={project.id}>
+              <Item key={project.id}>
                 {renderProjectCard(project)}
-              </div>
+              </Item>
             ))}
-          </div>
+          </Stagger>
         </div>
 
         {/* Startup Work Section */}
         {startupProjects.length > 0 && (
           <div className="mb-20 md:mb-24">
-            <div className="flex items-center gap-4 mb-8">
+            <Reveal className="flex items-center gap-4 mb-8">
               <h3 className="text-xl md:text-2xl font-display font-bold text-white">Startup Work</h3>
               <div className="h-px flex-1 bg-neutral-800"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </Reveal>
+            <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {startupProjects.map(project => (
-                <div key={project.id}>
+                <Item key={project.id}>
                   {renderProjectCard(project)}
-                </div>
+                </Item>
               ))}
-            </div>
+            </Stagger>
           </div>
         )}
 
         {/* Graphic Design Section */}
         <div>
-          <div className="flex items-center gap-4 mb-8">
+          <Reveal className="flex items-center gap-4 mb-8">
             <h3 className="text-xl md:text-2xl font-display font-bold text-white">Graphic Designs</h3>
             <div className="h-px flex-1 bg-neutral-800"></div>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 xl:gap-8">
+          </Reveal>
+          <Stagger className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 xl:gap-8">
             {graphicProjects.map(project => (
-              <div key={project.id}>
+              <Item key={project.id}>
                 {renderProjectCard(project)}
-              </div>
+              </Item>
             ))}
-          </div>
+          </Stagger>
         </div>
 
       </div>

@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { motion } from 'motion/react';
+
+const navLinks = [
+  { name: 'Work', href: '#portfolio', id: 'portfolio' },
+  { name: 'Services', href: '#services', id: 'services' },
+  { name: 'About', href: '#about', id: 'about' },
+  { name: 'Process', href: '#process', id: 'process' },
+  { name: 'Contact', href: '#contact', id: 'contact' },
+];
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,16 +23,29 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Work', href: '#portfolio' },
-    { name: 'Services', href: '#services' },
-    { name: 'About', href: '#about' },
-    { name: 'Process', href: '#process' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  // Scrollspy: highlight the nav link for the section currently in view
+  useEffect(() => {
+    const sections = navLinks
+      .map((link) => document.getElementById(link.id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+
+    sections.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
         isScrolled ? 'bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800 py-4' : 'bg-transparent py-6'
       }`}
@@ -36,12 +59,21 @@ const Header: React.FC = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href} 
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            <a
+              key={link.name}
+              href={link.href}
+              className={`relative text-sm font-medium transition-colors ${
+                activeSection === link.id ? 'text-white' : 'text-gray-300 hover:text-white'
+              }`}
             >
               {link.name}
+              {activeSection === link.id && (
+                <motion.span
+                  layoutId="nav-underline"
+                  className="absolute -bottom-1.5 left-0 right-0 h-px bg-white"
+                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                />
+              )}
             </a>
           ))}
           {/* Desktop CTA */}
@@ -54,7 +86,7 @@ const Header: React.FC = () => {
         </nav>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className="md:hidden text-white p-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
@@ -70,10 +102,12 @@ const Header: React.FC = () => {
         }`}
       >
         {navLinks.map((link) => (
-          <a 
-            key={link.name} 
-            href={link.href} 
-            className="text-lg font-medium text-gray-200 hover:text-white"
+          <a
+            key={link.name}
+            href={link.href}
+            className={`text-lg font-medium hover:text-white ${
+              activeSection === link.id ? 'text-white' : 'text-gray-200'
+            }`}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             {link.name}

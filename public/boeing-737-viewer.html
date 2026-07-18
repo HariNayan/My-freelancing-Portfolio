@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Boeing 737 GLB Viewer</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --panel: rgba(9, 12, 16, 0.72);
+        --line: rgba(255, 255, 255, 0.14);
+        --text: #f6f8fb;
+        --muted: #9ea8b7;
+        --accent: #5fd4ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #080b10;
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .hud {
+        position: fixed;
+        left: clamp(16px, 3vw, 34px);
+        top: clamp(16px, 3vw, 30px);
+        display: grid;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .title {
+        margin: 0;
+        max-width: min(420px, calc(100vw - 32px));
+        font-size: clamp(30px, 4vw, 58px);
+        line-height: 0.95;
+        letter-spacing: 0;
+        text-shadow: 0 10px 35px rgba(0, 0, 0, 0.58);
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        max-width: min(500px, calc(100vw - 32px));
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 7px 11px;
+        background: var(--panel);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1;
+        backdrop-filter: blur(18px);
+      }
+
+      .toolbar {
+        position: fixed;
+        right: clamp(16px, 3vw, 30px);
+        bottom: clamp(16px, 3vw, 30px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(18px);
+      }
+
+      button {
+        width: 42px;
+        height: 42px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        cursor: pointer;
+        font: 700 15px/1 ui-sans-serif, system-ui, sans-serif;
+      }
+
+      button:hover {
+        border-color: rgba(95, 212, 255, 0.72);
+        color: var(--accent);
+      }
+
+      .file-button {
+        width: auto;
+        min-width: 64px;
+        padding: 0 13px;
+      }
+
+      .status {
+        position: fixed;
+        left: 50%;
+        bottom: clamp(16px, 3vw, 30px);
+        width: min(560px, calc(100vw - 32px));
+        transform: translateX(-50%);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 16px;
+        background: var(--panel);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(18px);
+      }
+
+      .status strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .status a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .status a:hover {
+        text-decoration: underline;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 700px) {
+        .hud {
+          gap: 8px;
+        }
+
+        .toolbar {
+          left: 16px;
+          right: auto;
+        }
+
+        .status {
+          left: 16px;
+          right: 16px;
+          bottom: 76px;
+          width: auto;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app" aria-label="Boeing 737 3D model viewer"></main>
+
+    <section class="hud" aria-label="Aircraft details">
+      <h1 class="title">Boeing 737</h1>
+      <div class="meta">
+        <span class="chip">Commercial passenger aircraft</span>
+        <span class="chip">GLB model</span>
+        <span class="chip">Three.js PBR render</span>
+      </div>
+    </section>
+
+    <div class="toolbar" aria-label="Viewer controls">
+      <button id="resetView" type="button" title="Reset view">R</button>
+      <button id="toggleSpin" type="button" title="Toggle rotation">S</button>
+      <button id="toggleLights" type="button" title="Toggle inspection lights">L</button>
+      <button id="chooseModel" class="file-button" type="button" title="Choose a GLB model">GLB</button>
+    </div>
+    <input id="modelFile" class="hidden" type="file" accept=".glb,model/gltf-binary" />
+
+    <div id="status" class="status">
+      Loading <strong>public/models/boeing-737.glb</strong>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+      import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+      const params = new URLSearchParams(window.location.search);
+      const MODEL_URL = params.get("model") || "/models/boeing-737.glb";
+      const DEFAULT_MODEL_LABEL = MODEL_URL === "/models/boeing-737.glb" ? "public/models/boeing-737.glb" : MODEL_URL;
+
+      const app = document.querySelector("#app");
+      const status = document.querySelector("#status");
+      const resetViewButton = document.querySelector("#resetView");
+      const toggleSpinButton = document.querySelector("#toggleSpin");
+      const toggleLightsButton = document.querySelector("#toggleLights");
+      const chooseModelButton = document.querySelector("#chooseModel");
+      const modelFileInput = document.querySelector("#modelFile");
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x09111c);
+      scene.fog = new THREE.FogExp2(0x09111c, 0.018);
+
+      const camera = new THREE.PerspectiveCamera(
+        38,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        2000
+      );
+      camera.position.set(18, 7, 24);
+
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: "high-performance"
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.08;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      app.appendChild(renderer.domElement);
+
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.055;
+      controls.minDistance = 9;
+      controls.maxDistance = 85;
+      controls.maxPolarAngle = Math.PI * 0.49;
+      controls.target.set(0, 1.7, 0);
+
+      const hemiLight = new THREE.HemisphereLight(0xeaf5ff, 0x1c2530, 1.5);
+      scene.add(hemiLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 4.4);
+      keyLight.position.set(-16, 22, 14);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.set(2048, 2048);
+      keyLight.shadow.camera.near = 1;
+      keyLight.shadow.camera.far = 80;
+      keyLight.shadow.camera.left = -28;
+      keyLight.shadow.camera.right = 28;
+      keyLight.shadow.camera.top = 28;
+      keyLight.shadow.camera.bottom = -28;
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x9fdcff, 2.1);
+      rimLight.position.set(22, 9, -18);
+      scene.add(rimLight);
+
+      const inspectionRig = new THREE.Group();
+      const noseLight = new THREE.SpotLight(0xd9f4ff, 2.8, 55, 0.34, 0.55, 1.6);
+      noseLight.position.set(0, 10, 22);
+      noseLight.target.position.set(0, 1.5, 0);
+      inspectionRig.add(noseLight, noseLight.target);
+
+      const sideLight = new THREE.SpotLight(0xffffff, 2.2, 42, 0.38, 0.45, 1.4);
+      sideLight.position.set(-24, 8, -6);
+      sideLight.target.position.set(0, 1.4, 0);
+      inspectionRig.add(sideLight, sideLight.target);
+      scene.add(inspectionRig);
+
+      const ground = new THREE.Mesh(
+        new THREE.CircleGeometry(74, 128),
+        new THREE.MeshStandardMaterial({
+          color: 0x151b22,
+          roughness: 0.84,
+          metalness: 0.04
+        })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const runway = new THREE.Group();
+      const stripeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xbfc8d2,
+        roughness: 0.65,
+        metalness: 0.02
+      });
+      for (let i = -5; i <= 5; i += 1) {
+        const stripe = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.012, 5.4), stripeMaterial);
+        stripe.position.set(0, 0.014, i * 8);
+        stripe.receiveShadow = true;
+        runway.add(stripe);
+      }
+      scene.add(runway);
+
+      const loader = new GLTFLoader();
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath("https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/");
+      loader.setDRACOLoader(dracoLoader);
+
+      let aircraft = null;
+      let spin = true;
+      let clock = new THREE.Clock();
+      let localModelUrl = null;
+
+      function refineMaterials(root) {
+        root.traverse((child) => {
+          if (!child.isMesh) return;
+
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          const materials = Array.isArray(child.material) ? child.material : [child.material];
+          materials.forEach((material) => {
+            if (!material) return;
+
+            material.envMapIntensity = material.metalness > 0.45 ? 1.25 : 0.86;
+            material.needsUpdate = true;
+
+            const name = `${material.name || ""} ${child.name || ""}`.toLowerCase();
+            if (name.includes("glass") || name.includes("window") || name.includes("cockpit")) {
+              material.transparent = true;
+              material.opacity = Math.min(material.opacity || 1, 0.52);
+              material.roughness = 0.08;
+              material.metalness = 0.02;
+              material.envMapIntensity = 1.55;
+            }
+
+            if (name.includes("tire") || name.includes("rubber")) {
+              material.roughness = 0.92;
+              material.metalness = 0.0;
+            }
+
+            if (name.includes("metal") || name.includes("engine") || name.includes("fan")) {
+              material.roughness = Math.min(material.roughness ?? 0.4, 0.42);
+              material.metalness = Math.max(material.metalness ?? 0.2, 0.52);
+            }
+          });
+        });
+      }
+
+      function frameModel(root) {
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const largestAxis = Math.max(size.x, size.y, size.z) || 1;
+        const scale = 22 / largestAxis;
+
+        root.scale.setScalar(scale);
+        root.position.sub(center.multiplyScalar(scale));
+
+        const framedBox = new THREE.Box3().setFromObject(root);
+        const framedSize = framedBox.getSize(new THREE.Vector3());
+        const framedCenter = framedBox.getCenter(new THREE.Vector3());
+
+        root.position.x -= framedCenter.x;
+        root.position.z -= framedCenter.z;
+        root.position.y -= framedBox.min.y;
+
+        controls.target.set(0, Math.max(1.5, framedSize.y * 0.42), 0);
+        camera.position.set(framedSize.x * 0.85, framedSize.y * 0.42, framedSize.z * 1.15);
+        camera.near = Math.max(0.05, largestAxis * scale * 0.001);
+        camera.far = Math.max(600, largestAxis * scale * 12);
+        camera.updateProjectionMatrix();
+        controls.update();
+      }
+
+      function setStatus(message, isError = false) {
+        status.classList.remove("hidden");
+        status.innerHTML = message;
+        status.style.borderColor = isError ? "rgba(255, 116, 116, 0.52)" : "rgba(255, 255, 255, 0.14)";
+      }
+
+      function clearAircraft() {
+        if (!aircraft) return;
+        scene.remove(aircraft);
+        aircraft.traverse((child) => {
+          if (!child.isMesh) return;
+          child.geometry?.dispose();
+          const materials = Array.isArray(child.material) ? child.material : [child.material];
+          materials.forEach((material) => material?.dispose?.());
+        });
+        aircraft = null;
+      }
+
+      function loadAircraft(url, label, isLocalFile = false) {
+        setStatus(`Loading <strong>${label}</strong>`);
+        loader.load(
+          url,
+          (gltf) => {
+            clearAircraft();
+            aircraft = gltf.scene;
+            aircraft.name = "Boeing 737 GLB";
+            refineMaterials(aircraft);
+            frameModel(aircraft);
+            scene.add(aircraft);
+            status.classList.add("hidden");
+
+            if (isLocalFile && localModelUrl) {
+              URL.revokeObjectURL(localModelUrl);
+              localModelUrl = null;
+            }
+          },
+          (event) => {
+            if (!event.total) return;
+            const pct = Math.round((event.loaded / event.total) * 100);
+            setStatus(`Loading <strong>${label}</strong> ${pct}%`);
+          },
+          () => {
+            setStatus(
+              `Could not load <strong>${label}</strong>. Save a licensed Boeing 737 GLB as <strong>public/models/boeing-737.glb</strong>, or press <strong>GLB</strong> and choose the downloaded file. Sketchfab downloads require a signed-in account.`,
+              true
+            );
+          }
+        );
+      }
+
+      async function modelLooksLikeGlb(url) {
+        try {
+          const response = await fetch(url, {
+            cache: "no-store",
+            headers: { Range: "bytes=0-3" }
+          });
+          if (!response.ok) return false;
+
+          const header = new Uint8Array(await response.arrayBuffer());
+          return header.length >= 4
+            && header[0] === 0x67
+            && header[1] === 0x6c
+            && header[2] === 0x54
+            && header[3] === 0x46;
+        } catch {
+          return false;
+        }
+      }
+
+      async function loadDefaultAircraft() {
+        if (MODEL_URL === "/models/boeing-737.glb") {
+          const hasModel = await modelLooksLikeGlb(MODEL_URL);
+          if (!hasModel) {
+            setStatus(
+              `No GLB model file was found at <strong>public/models/boeing-737.glb</strong>. Download a licensed Boeing 737 GLB, place it there with that exact name, then refresh. You can also press <strong>GLB</strong> and choose the file from your computer.`,
+              true
+            );
+            return;
+          }
+        }
+
+        loadAircraft(MODEL_URL, DEFAULT_MODEL_LABEL);
+      }
+
+      function chooseLocalModel(file) {
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith(".glb")) {
+          setStatus("Please choose a single <strong>.glb</strong> file. Separate .gltf files often need external texture and .bin files.", true);
+          return;
+        }
+
+        if (localModelUrl) URL.revokeObjectURL(localModelUrl);
+        localModelUrl = URL.createObjectURL(file);
+        loadAircraft(localModelUrl, file.name, true);
+      }
+
+      loadDefaultAircraft();
+
+      resetViewButton.addEventListener("click", () => {
+        camera.position.set(18, 7, 24);
+        controls.target.set(0, 1.7, 0);
+        controls.update();
+      });
+
+      toggleSpinButton.addEventListener("click", () => {
+        spin = !spin;
+      });
+
+      toggleLightsButton.addEventListener("click", () => {
+        inspectionRig.visible = !inspectionRig.visible;
+      });
+
+      chooseModelButton.addEventListener("click", () => {
+        modelFileInput.click();
+      });
+
+      modelFileInput.addEventListener("change", () => {
+        chooseLocalModel(modelFileInput.files?.[0]);
+      });
+
+      app.addEventListener("dragover", (event) => {
+        event.preventDefault();
+      });
+
+      app.addEventListener("drop", (event) => {
+        event.preventDefault();
+        chooseLocalModel(event.dataTransfer.files?.[0]);
+      });
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      });
+
+      renderer.setAnimationLoop(() => {
+        const delta = clock.getDelta();
+        if (aircraft && spin) aircraft.rotation.y += delta * 0.18;
+        controls.update();
+        renderer.render(scene, camera);
+      });
+    </script>
+  </body>
+</html>

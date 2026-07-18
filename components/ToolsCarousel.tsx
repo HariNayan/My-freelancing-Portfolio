@@ -25,7 +25,7 @@ const TOOLS = [
   {
     id: 'lr',
     name: 'Lightroom',
-    logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWfGsNzhTiuBNUcVd1xRP0dRuSgCfQE92BYg&s'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Adobe_Photoshop_Lightroom_CC_logo.svg'
   },
   {
     id: 'davinci',
@@ -35,7 +35,7 @@ const TOOLS = [
   {
     id: 'capcut',
     name: 'CapCut',
-    logo: 'https://images-eds-ssl.xboxlive.com/image?url=4rt9.lXDC4H_93laV1_eHHFT949fUipzkiFOBH3fAiZZUCdYojwUyX2aTonS1aIwMrx6NUIsHfUHSLzjGJFxxtHdRB6xk71KqOPxE23.XPiCdYh93Eoi.AcF3m2d1hwUV5BFbxbFKWoKMoaSW8ikKAVeKREQ1Q78CpiLfycKgd0-&format=source'
+    logo: '/logos/capcut.webp'
   },
   {
     id: 'blender',

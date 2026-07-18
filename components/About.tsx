@@ -1,6 +1,7 @@
 import React from 'react';
 import { PROJECT_STATS } from '../constants';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Reveal, Eyebrow, CountUp } from './Reveal';
 
 const About: React.FC = () => {
   return (
@@ -9,8 +10,9 @@ const About: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Content */}
-          <div>
-            <h2 className="text-3xl font-display font-bold text-white mb-6">About Hari</h2>
+          <Reveal>
+            <Eyebrow index="04" label="About" />
+            <h2 className="text-3xl font-display font-bold text-white mt-4 mb-6">About Hari</h2>
             <div className="space-y-4 text-gray-400 leading-relaxed text-base xl:text-xl">
               <p>
                 I'm a multidisciplinary creative with a passion for visual storytelling. With over 3 years of experience in both video editing and graphic design, I bridge the gap between static and moving visuals.
@@ -22,22 +24,22 @@ const About: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-4 xl:gap-12 mt-12 border-t border-neutral-800 pt-8">
               <div>
-                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">3+</span>
+                <CountUp to={3} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
                 <span className="text-sm text-gray-500">Years Exp.</span>
               </div>
               <div>
-                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">1000+</span>
+                <CountUp to={1000} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
                 <span className="text-sm text-gray-500">Projects</span>
               </div>
               <div>
-                <span className="block text-2xl md:text-3xl font-bold text-white mb-1">20+</span>
+                <CountUp to={20} suffix="+" className="block text-2xl md:text-3xl font-bold text-white mb-1" />
                 <span className="text-sm text-gray-500">Happy Clients</span>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Chart Visualization */}
-          <div className="bg-neutral-900 p-6 md:p-8 rounded-2xl border border-neutral-800">
+          <Reveal delay={0.15} className="bg-neutral-900 p-6 md:p-8 rounded-2xl border border-neutral-800">
              <h3 className="text-white font-semibold mb-6">Project Distribution (%)</h3>
              <div className="h-[300px] md:h-[350px] xl:h-[400px] w-full">
                <ResponsiveContainer width="100%" height="100%">
@@ -68,7 +70,7 @@ const About: React.FC = () => {
                </ResponsiveContainer>
              </div>
              <p className="text-xs text-center text-gray-600 mt-4">Data representing project volume over the last fiscal year.</p>
-          </div>
+          </Reveal>
 
         </div>
       </div>

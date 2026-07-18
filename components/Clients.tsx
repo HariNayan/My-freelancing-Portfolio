@@ -1,19 +1,20 @@
 import React from 'react';
 import { CLIENTS, STARTUP_CLIENTS } from '../constants';
 import { Youtube, Instagram, ExternalLink, Users, Building2 } from 'lucide-react';
+import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
 
 const Clients: React.FC = () => {
   return (
     <section className="py-16 md:py-24 xl:py-32 bg-neutral-900 border-t border-neutral-800 px-6">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl font-display font-bold text-white mb-4">Trusted By Creators</h2>
+        <Reveal className="text-center mb-12 md:mb-16">
+          <Eyebrow index="05" label="Clients" center />
+          <h2 className="text-3xl font-display font-bold text-white mt-4 mb-4">Trusted By Creators</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Collaborating with top talent across YouTube and Social Media to deliver high-impact visuals.</p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 md:gap-6">
-          {CLIENTS.map((client) => (<a 
-              key={client.id} 
+        </Reveal>
+
+        <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 md:gap-6">
+          {CLIENTS.map((client) => (<Item key={client.id}><a
               href={client.link}
               target="_blank"
               rel="noopener noreferrer"
@@ -56,20 +57,20 @@ const Clients: React.FC = () => {
                   Visit Channel
                 </span>
               </div>
-            </a>
+            </a></Item>
           ))}
-        </div>
+        </Stagger>
 
         <div className="mt-16 md:mt-24">
-          <div className="text-center mb-12">
+          <Reveal className="text-center mb-12">
             <h2 className="text-3xl font-display font-bold text-white mb-4">Trusted By Startups & Brands</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">Partnering with startups and brands to create impactful visual content.</p>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+          <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             {STARTUP_CLIENTS.map((client) => (
+              <Item key={client.id}>
               <a
-                key={client.id}
                 href={client.link}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -101,8 +102,9 @@ const Clients: React.FC = () => {
                   </span>
                 </div>
               </a>
+              </Item>
             ))}
-          </div>
+          </Stagger>
         </div>
       </div>
     </section>

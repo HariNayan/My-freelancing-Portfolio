@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Instagram, Linkedin, CheckCircle } from 'lucide-react';
+import { Reveal, Eyebrow } from './Reveal';
 
 const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -33,12 +34,13 @@ const Contact: React.FC = () => {
     <section id="contact" className="py-16 md:py-24 xl:py-32 bg-neutral-950 px-6">
       <div className="container mx-auto max-w-4xl xl:max-w-6xl">
         
-        <div className="text-center mb-10 md:mb-12">
-          <h2 className="text-3xl xl:text-5xl font-display font-bold text-white mb-4">Let's Work Together</h2>
+        <Reveal className="text-center mb-10 md:mb-12">
+          <Eyebrow index="06" label="Contact" center />
+          <h2 className="text-3xl xl:text-5xl font-display font-bold text-white mt-4 mb-4">Let's Work Together</h2>
           <p className="text-gray-400">I'm currently available for freelance projects. Send me a message and let's discuss your vision.</p>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-0 bg-neutral-900 rounded-2xl overflow-hidden shadow-2xl border border-neutral-800">
+        <Reveal delay={0.1} className="grid grid-cols-1 md:grid-cols-5 gap-0 bg-neutral-900 rounded-2xl overflow-hidden shadow-2xl border border-neutral-800">
            
            {/* Contact Info */}
            <div className="md:col-span-2 bg-neutral-800 p-6 md:p-10 flex flex-col justify-between">
@@ -119,7 +121,7 @@ const Contact: React.FC = () => {
               </form>
            </div>
 
-        </div>
+        </Reveal>
       </div>
     </section>
   );

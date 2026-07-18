@@ -26,12 +26,14 @@ Portfolio showcasing work in **video editing**, **graphic design**, and **motion
 ## Project Structure
 
 ```
-src/
 ├── App.tsx              # Root layout with lazy-loaded About
 ├── index.tsx            # Entry point
-├── style.css            # Tailwind + custom theme
+├── index.html           # Meta tags, fonts, SEO
 ├── types.ts             # TypeScript interfaces
 ├── constants.tsx        # All data (projects, services, clients, stats)
+├── src/
+│   └── style.css        # Tailwind + custom theme
+├── public/              # Static assets (thumbnails, avatars, og-image)
 └── components/
     ├── Header.tsx       # Nav with anchor links + mobile menu
     ├── Hero.tsx

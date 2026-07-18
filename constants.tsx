@@ -1,4 +1,4 @@
-import { Project, ProjectCategory, Service, Client, StatData, Testimonial } from './types';
+import { Project, ProjectCategory, Service, Client, StatData } from './types';
 import {
   Film,
   Image as ImageIcon,
@@ -78,47 +78,43 @@ export const PROJECTS: Project[] = [
   // --- GRAPHIC DESIGN PROJECTS (Vertical Only) ---
   {
     id: 'g5',
-    title: 'Urban Fashion Story',
+    title: 'Back To Fitness',
     category: ProjectCategory.GRAPHIC,
     subcategory: 'Social Media',
-    thumbnail: '/BACK TO FITNESS_2.png',
+    thumbnail: '/back-to-fitness.webp',
     format: 'vertical',
-    description: 'Vertical promo for streetwear brand.',
-    client: 'UrbanFit',
+    description: 'Gym comeback creative with bold typography for a fitness coach.',
     tools: ['Photoshop']
   },
   {
     id: 'g6',
-    title: 'Music Festival Poster',
+    title: 'Fly By Wire Explained',
     category: ProjectCategory.GRAPHIC,
-    subcategory: 'Posters',
-    thumbnail: '/fly by wire.png',
+    subcategory: 'Thumbnail Design',
+    thumbnail: '/fly-by-wire.webp',
     format: 'vertical',
-    description: 'Event poster for summer festival.',
-    client: 'SummerVibes',
-    tools: ['Illustrator', 'Indesign']
+    description: 'Cover design for an aviation explainer on fly-by-wire flight controls.',
+    tools: ['Photoshop']
   },
   {
     id: 'g7',
-    title: 'Minimalist Book Cover',
+    title: 'Temporary Medically Unfit',
     category: ProjectCategory.GRAPHIC,
-    subcategory: 'Print',
-    thumbnail: '/TMU (1).png',
+    subcategory: 'Thumbnail Design',
+    thumbnail: '/tmu-thumbnail.webp',
     format: 'vertical',
-    description: 'Cover design for modern novel.',
-    client: 'Penguin Books',
-    tools: ['InDesign']
+    description: 'Story-driven cover for an aviation medical-recovery short.',
+    tools: ['Photoshop']
   },
   {
     id: 'g8',
-    title: 'App Onboarding UI',
+    title: 'VDGS Explained',
     category: ProjectCategory.GRAPHIC,
-    subcategory: 'UI/UX',
-    thumbnail: '/VDGS - 2.png',
+    subcategory: 'Thumbnail Design',
+    thumbnail: '/vdgs-thumbnail.webp',
     format: 'vertical',
-    description: 'Mobile app onboarding screens.',
-    client: 'TechStart',
-    tools: ['Figma']
+    description: 'Cover design explaining the visual docking guidance system pilots use at the gate.',
+    tools: ['Photoshop']
   }
 ];
 
@@ -167,7 +163,7 @@ export const CLIENTS: Client[] = [
     name: 'Aviator Vinay',
     platform: 'Instagram',
     handle: '@aviator_vinay',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxrcCB2B6yB8Vupcv6RZ-HZK5T9b0XPNhjUg&s',
+    avatar: '/avatars/aviator-vinay.webp',
     link: 'https://www.instagram.com/aviator_vinay/',
     stats: '220K Follower'
   },
@@ -176,7 +172,7 @@ export const CLIENTS: Client[] = [
     name: 'Manik Verma',
     platform: 'Instagram',
     handle: '@manikk.ai',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsbfngAlH321PsEJAldZRjHPJ590FwpdDLcw&s',
+    avatar: '/avatars/manik-verma.webp',
     link: 'https://www.instagram.com/manikk.ai/',
     stats: '105K Followers'
   },
@@ -185,7 +181,7 @@ export const CLIENTS: Client[] = [
     name: 'Sarath Penumuru',
     platform: 'Instagram',
     handle: '@coachsarathpenumuru',
-    avatar: 'https://media.licdn.com/dms/image/v2/D5603AQHY3YNc_XgsSA/profile-displayphoto-scale_200_200/B56ZrdoRjgLMAY-/0/1764654915169?e=2147483647&v=beta&t=iltUxIxt0nL99loo8hj8RvThvckIErwOpyHnzSlgyi0',
+    avatar: '/avatars/sarath-penumuru.webp',
     link: 'https://www.instagram.com/coachsarathpenumuru',
     stats: '3.1k Followers'
   },
@@ -194,7 +190,7 @@ export const CLIENTS: Client[] = [
     name: 'Techiemant',
     platform: 'Instagram',
     handle: '@techiemant',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKausuy8qz-w8a21GY875e3IhlXw0yP1HF9g&s',
+    avatar: '/avatars/techiemant.webp',
     link: 'https://www.instagram.com/techiemant/',
     stats: '2.6K Followers'
   },
@@ -207,7 +203,7 @@ export const STARTUP_CLIENTS = [
     handle: 'slashy.com',
     link: 'https://www.slashy.com/',
     tag: 'YC-Backed Startup',
-    logo: 'https://slashy.ai/favicon.ico',
+    logo: '/avatars/slashy.svg',
   },
   {
     id: 's2',
@@ -224,28 +220,5 @@ export const PROJECT_STATS: StatData[] = [
   { name: 'YouTube', value: 30 },
   { name: 'Startup', value: 15 },
   { name: 'Branding', value: 10 },
-];
-
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    id: '1',
-    name: 'Sarah Jenkins',
-    role: 'Marketing Director',
-    company: 'TechFlow',
-    quote: 'Hari transformed our raw footage into a compelling narrative that drove a 40% increase in engagement. Truly a master of his craft.'
-  },
-  {
-    id: '2',
-    name: 'Mike Ross',
-    role: 'Content Creator',
-    quote: 'The best editor I have worked with. He understands pacing and humor perfectly. My subscriber count has doubled since we started collaborating.'
-  },
-  {
-    id: '3',
-    name: 'Elena Rodriguez',
-    role: 'Founder',
-    company: 'GreenEarth',
-    quote: 'We needed a brand identity that felt organic yet professional. Hari nailed the brief on the first try. Highly recommended!'
-  }
 ];
 
