@@ -7,7 +7,17 @@
   },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    // Every route is prerendered to its own index.html, so a missing path is
+    // genuinely missing. "single-page-application" answered *everything* with
+    // index.html and HTTP 200 — a soft 404, which tells search engines a
+    // typo'd URL is a real page, and which silently served HTML in place of
+    // any mistyped asset. "404-page" serves the prerendered /404.html with a
+    // real 404 status instead.
+    "not_found_handling": "404-page",
+    // Serve /work/slashy directly rather than 307-redirecting to
+    // /work/slashy/. The canonical tag and the sitemap both use the
+    // slash-less form, so this stops the shared URL disagreeing with itself.
+    "html_handling": "drop-trailing-slash"
   },
   "compatibility_flags": [
     "nodejs_compat"

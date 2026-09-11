@@ -23,6 +23,16 @@ dist-ssr
 *.sln
 *.sw?
 
+# Claude Code — launch.json is shared dev-server config and is tracked;
+# settings.local.json is per-machine permission state and is not.
+.claude/settings.local.json
+
+# Motion-graphics build output. The composition source under videos/ is
+# tracked so the hero animation stays reproducible, but the rendered MP4
+# already ships from public/ and the proof frames are throwaway.
+videos/*/renders/
+videos/*/snapshots/
+
 # wrangler files
 .wrangler
 .dev.vars*

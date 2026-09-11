@@ -4,29 +4,58 @@ import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
 
 const Services: React.FC = () => {
   return (
-    <section id="services" className="py-16 md:py-24 xl:py-32 bg-neutral-950 px-6">
+    <section id="services" className="bg-ground px-4 md:px-6 py-12 md:py-[72px]">
       <div className="container mx-auto max-w-6xl">
-        <Reveal className="mb-12 md:mb-16">
+        <Reveal className="mb-10 md:mb-14 max-w-2xl">
           <Eyebrow index="02" label="Services" />
-          <h2 className="text-3xl md:text-5xl xl:text-6xl font-display font-bold text-white mt-4 mb-4">What We Do</h2>
-          <p className="text-gray-400 max-w-2xl">Tailored creative solutions designed to elevate your brand's visual presence across all platforms.</p>
+          <h2 className="text-3xl md:text-[2.75rem] font-display font-extrabold text-ink tracking-[-0.025em] leading-[1.1] mt-5 mb-4 text-balance">
+            What I make
+          </h2>
+          <p className="text-muted md:text-lg">
+            Six things, named after what they&rsquo;re for. Most engagements start with one and grow
+            into a couple.
+          </p>
         </Reveal>
 
-        <Stagger className="border-t border-neutral-800">
+        <Stagger className="panel overflow-hidden">
           {SERVICES.map((service, index) => {
             const Icon = service.icon;
             return (
-              <Item key={service.id}>
-                <div className="group flex flex-col md:flex-row md:items-center gap-2 md:gap-8 py-7 md:py-9 px-3 md:px-5 -mx-3 md:-mx-5 border-b border-neutral-800 transition-colors duration-300 hover:bg-neutral-900/70 rounded-lg">
-                  <span className="text-sm font-semibold text-neutral-600 md:w-12 shrink-0">0{index + 1}</span>
-                  <h3 className="text-2xl md:text-3xl xl:text-4xl font-display font-bold text-white md:w-2/5 group-hover:translate-x-2 transition-transform duration-300">
+              <Item key={service.slug}>
+                <div
+                  className={`group flex flex-col md:flex-row md:items-start gap-4 md:gap-8 p-6 md:p-8 transition-colors duration-200 hover:bg-ground/60 ${
+                    index > 0 ? 'border-t border-hairline' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-3 md:w-12 md:flex-col md:items-start md:gap-4 shrink-0">
+                    <span className="font-mono text-[11px] text-faint tabular-nums">
+                      0{index + 1}
+                    </span>
+                    <Icon size={17} strokeWidth={1.75} className="text-faint md:hidden" />
+                  </div>
+
+                  <h3 className="text-xl md:text-2xl font-display font-bold text-ink md:w-[32%] shrink-0 tracking-[-0.015em] text-balance">
                     {service.title}
                   </h3>
-                  <p className="text-gray-400 text-sm md:text-base leading-relaxed md:flex-1">{service.description}</p>
+
+                  <div className="md:flex-1">
+                    <p className="text-[15px] text-muted leading-relaxed">{service.description}</p>
+                    <ul className="mt-4 flex flex-wrap gap-2">
+                      {service.deliverables.map((d) => (
+                        <li
+                          key={d}
+                          className="text-[11px] text-muted bg-sunken rounded-full px-2.5 py-1"
+                        >
+                          {d}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
                   <Icon
-                    size={24}
-                    strokeWidth={1.5}
-                    className="hidden md:block shrink-0 text-neutral-600 group-hover:text-white transition-colors duration-300"
+                    size={18}
+                    strokeWidth={1.75}
+                    className="hidden md:block shrink-0 text-hairline-strong group-hover:text-ink transition-colors duration-200 mt-1"
                   />
                 </div>
               </Item>
