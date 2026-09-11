@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
-import { Mail, Instagram, Linkedin, CheckCircle } from 'lucide-react';
+import { Mail, Instagram, Linkedin, CheckCircle, CalendarDays, Clock, ChevronRight } from 'lucide-react';
 import { Reveal, Eyebrow } from './Reveal';
+import { BOOKING_URL, TURNAROUND } from '../constants';
+
+const EMAIL = 'harinayan.work@gmail.com';
+
+const HELPS = [
+  'What you’re making — a demo, a launch film, an ad set',
+  'When it needs to be live',
+  'Where it runs — site, paid social, Product Hunt, a pitch',
+];
+
+const fieldClass =
+  'w-full bg-ground border border-hairline rounded-[8px] px-4 py-3 text-ink placeholder:text-faint ' +
+  'focus:outline-none focus:border-ink focus:bg-surface transition-colors';
+
+const labelClass = 'block font-mono text-[10px] uppercase tracking-[0.14em] text-faint mb-2';
 
 const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -16,7 +31,7 @@ const Contact: React.FC = () => {
       const res = await fetch('https://formspree.io/f/mlgvbyjk', {
         method: 'POST',
         body: data,
-        headers: { 'Accept': 'application/json' },
+        headers: { Accept: 'application/json' },
       });
 
       if (res.ok) {
@@ -31,97 +46,156 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-24 xl:py-32 bg-neutral-950 px-6">
-      <div className="container mx-auto max-w-4xl xl:max-w-6xl">
-        
-        <Reveal className="text-center mb-10 md:mb-12">
-          <Eyebrow index="06" label="Contact" center />
-          <h2 className="text-4xl md:text-6xl xl:text-7xl font-display font-bold text-white mt-4 mb-4">Let's Work Together</h2>
-          <p className="text-gray-400">Tell us about your project — we usually reply within 24 hours.</p>
-        </Reveal>
+    <section id="contact" className="bg-ground px-4 md:px-6 py-12 md:py-[72px]">
+      <div className="container mx-auto max-w-6xl">
+        <div className="panel p-7 md:p-12 xl:p-14">
+          <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 xl:gap-20">
+            {/* ── Pitch ── */}
+            <Reveal>
+              <Eyebrow index="06" label="Contact" />
+              <h2 className="text-3xl md:text-[2.5rem] font-display font-extrabold text-ink tracking-[-0.025em] leading-[1.1] mt-5 mb-5 text-balance">
+                Start a project
+              </h2>
+              <p className="text-muted leading-relaxed max-w-md">
+                Tell me what you&rsquo;re shipping and when it needs to be out. I reply within 24
+                hours, and I&rsquo;ll say so early if it isn&rsquo;t a fit.
+              </p>
 
-        <Reveal delay={0.1} className="grid grid-cols-1 md:grid-cols-5 gap-0 bg-neutral-900 rounded-2xl overflow-hidden shadow-2xl border border-neutral-800">
-           
-           {/* Contact Info */}
-           <div className="md:col-span-2 bg-neutral-800 p-6 md:p-10 flex flex-col justify-between">
-              <div>
-                <h3 className="text-white font-bold text-xl mb-6">Contact Info</h3>
-                <div className="space-y-6">
-                   <a href="mailto:workwithharinayan@gmail.com" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
-                      <Mail size={20} />
-                      <span>Email</span>
-                   </a>
-                </div>
-              </div>
-              
-              <div className="mt-8 md:mt-10">
-                <h4 className="text-gray-500 text-sm uppercase font-bold tracking-wider mb-4">Socials</h4>
-                <div className="flex gap-4">
-                  <a href="https://www.instagram.com/creo.mov/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-neutral-900 transition-colors">
-                    <Instagram size={20} />
-                  </a>
-                  <a href="https://www.linkedin.com/in/harinayanrajpattun/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 bg-neutral-700 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-neutral-900 transition-colors">
-                    <Linkedin size={20} />
-                  </a>
-                </div>
-              </div>
-           </div>
+              {BOOKING_URL && (
+                <a
+                  href={BOOKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group mt-7 inline-flex items-center gap-2.5 px-6 py-3.5 btn btn-primary"
+                >
+                  <CalendarDays size={17} />
+                  Book a 15-min call
+                  <ChevronRight size={17} className="btn-chevron" strokeWidth={2.5} />
+                </a>
+              )}
 
-           {/* Form */}
-           <div className="md:col-span-3 p-6 md:p-10">
-                 <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
-                  <div>
-                   <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Name</label>
-                   <input 
-                    type="text" 
-                    id="name" 
-                    name="name"
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
-                    placeholder="John Doe"
-                    required
-                   />
-                 </div>
-                 <div>
-                   <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">Email</label>
-                   <input 
-                    type="email" 
-                    id="email" 
-                    name="email"
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors"
-                    placeholder="john@example.com"
-                    required
-                   />
-                 </div>
-                 <div>
-                   <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">Message</label>
-                   <textarea 
-                    id="message" 
-                    name="message"
-                    rows={4}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-4 py-3 xl:py-4 text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-colors resize-none"
-                    placeholder="Tell me about your project..."
-                    required
-                   ></textarea>
-                 </div>
-                  <button 
-                   type="submit" 
-                   disabled={status === 'sending'}
-                   className="w-full bg-white text-neutral-950 font-bold py-4 xl:py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              <div className="mt-9 pt-7 border-t border-hairline">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint mb-4">
+                  Worth including
+                </p>
+                <ul className="space-y-2.5">
+                  {HELPS.map((item) => (
+                    <li key={item} className="flex gap-3 text-sm text-muted">
+                      <span aria-hidden className="text-hairline-strong mt-0.5 shrink-0">
+                        &rarr;
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-9 pt-7 border-t border-hairline flex flex-wrap items-center gap-x-8 gap-y-5">
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="group inline-flex items-center gap-2.5 text-sm text-ink hover:text-muted transition-colors"
+                >
+                  <Mail size={16} className="text-faint" />
+                  <span className="break-all">{EMAIL}</span>
+                </a>
+
+                <div className="flex items-center gap-2.5">
+                  <a
+                    href="https://www.instagram.com/creo.mov/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-ink hover:border-hairline-strong transition-colors"
                   >
-                    {status === 'sending' ? 'Sending...' : 'Send Message'}
-                  </button>
+                    <Instagram size={16} />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/harinayanrajpattun/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    className="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-ink hover:border-hairline-strong transition-colors"
+                  >
+                    <Linkedin size={16} />
+                  </a>
+                </div>
+              </div>
+
+              {TURNAROUND && (
+                <p className="mt-8 inline-flex items-center gap-2 text-xs text-faint">
+                  <Clock size={13} />
+                  {TURNAROUND}
+                </p>
+              )}
+            </Reveal>
+
+            {/* ── Form ── */}
+            <Reveal delay={0.1}>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="name" className={labelClass}>
+                      Name
+                    </label>
+                    <input type="text" id="name" name="name" required className={fieldClass} placeholder="Your name" />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className={labelClass}>
+                      Email
+                    </label>
+                    <input type="email" id="email" name="email" required className={fieldClass} placeholder="you@company.com" />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="company" className={labelClass}>
+                    Company <span className="text-hairline-strong">(optional)</span>
+                  </label>
+                  <input type="text" id="company" name="company" className={fieldClass} placeholder="Company or product name" />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className={labelClass}>
+                    Project
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={7}
+                    required
+                    className={`${fieldClass} resize-none`}
+                    placeholder="What you're making, when it ships, and where it runs."
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="w-full sm:w-auto px-7 py-3.5 btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === 'sending' ? 'Sending…' : 'Send message'}
+                </button>
+
+                <div aria-live="polite" className="min-h-[1.25rem]">
                   {status === 'success' && (
-                    <div className="flex items-center gap-2 text-green-400 text-sm">
-                      <CheckCircle size={16} /> Message sent! I'll get back to you soon.
-                    </div>
+                    <p className="flex items-center gap-2 text-green-700 text-sm">
+                      <CheckCircle size={16} /> Sent. I&rsquo;ll get back to you within 24 hours.
+                    </p>
                   )}
                   {status === 'error' && (
-                    <p className="text-red-400 text-sm">Something went wrong. Please try again or email me directly.</p>
+                    <p className="text-red-700 text-sm">
+                      Something went wrong. Email me directly at{' '}
+                      <a href={`mailto:${EMAIL}`} className="underline hover:text-red-800">
+                        {EMAIL}
+                      </a>
+                      .
+                    </p>
                   )}
+                </div>
               </form>
-           </div>
-
-        </Reveal>
+            </Reveal>
+          </div>
+        </div>
       </div>
     </section>
   );

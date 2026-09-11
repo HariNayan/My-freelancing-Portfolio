@@ -1,164 +1,151 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, animate, useInView, useReducedMotion, useSpring, useScroll, useTransform } from 'motion/react';
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+/* ─────────────────────────────────────────────────────────────
+   Scroll reveals are CSS transitions triggered by an
+   IntersectionObserver, not JavaScript-driven animations.
 
-// Fade-up + blur-in when the element enters the viewport. Runs once.
+   Why: the previous implementation set every revealed element to
+   opacity 0 as its initial React state and animated it back with
+   requestAnimationFrame. Anywhere rAF is throttled or the bundle
+   is slow, that leaves the entire page invisible. Here the resting
+   state is visible, the hidden state is only applied once JS has
+   proved it can run, and the animation itself is CSS.
+   ───────────────────────────────────────────────────────────── */
+
+type CSSVars = React.CSSProperties & Record<`--${string}`, string | number>;
+
+/* ── Safety net ───────────────────────────────────────────────
+   IntersectionObserver callbacks are delivered as a step of the
+   browser's rendering lifecycle — the same loop that drives rAF.
+   If that loop stalls (throttled tab, embedded webview, machine
+   under load) observations never arrive and, without this, every
+   revealed element would stay hidden forever.
+
+   So: the first observer to receive ANY callback marks the API
+   healthy. If nothing has been delivered shortly after mount, we
+   assume it never will be and show everything.
+   ─────────────────────────────────────────────────────────── */
+const FALLBACK_MS = 1500;
+
+/* Set by the first observer callback that ever arrives. Once IntersectionObserver
+   has proved it works, no element needs the fallback again. */
+let observerHealthy = false;
+
+function useInViewOnce<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // No IntersectionObserver at all — just show it.
+    if (typeof IntersectionObserver === 'undefined') {
+      setVisible(true);
+      return;
+    }
+
+    const show = () => setVisible(true);
+
+    /* Each element arms its own timer. This was previously one module-level
+       one-shot timer shared by every element, which meant that once it had
+       fired, anything mounted later — i.e. every element on every subsequent
+       route — was left with no safety net at all. */
+    const timer = window.setTimeout(() => {
+      if (!observerHealthy) show();
+    }, FALLBACK_MS);
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        // Any delivered callback proves the lifecycle is running.
+        observerHealthy = true;
+        if (entry.isIntersecting) {
+          show();
+          io.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -60px 0px' }
+    );
+
+    io.observe(el);
+    return () => {
+      window.clearTimeout(timer);
+      io.disconnect();
+    };
+  }, []);
+
+  return { ref, visible };
+}
+
+/** Fade-up + blur-in when the element enters the viewport. Runs once. */
 export const Reveal: React.FC<{
   children: React.ReactNode;
   delay?: number;
-  y?: number;
   className?: string;
-}> = ({ children, delay = 0, y = 28, className }) => {
-  const reduce = useReducedMotion();
+}> = ({ children, delay = 0, className }) => {
+  const { ref, visible } = useInViewOnce<HTMLDivElement>();
   return (
-    <motion.div
-      className={className}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y, filter: 'blur(8px)' }}
-      whileInView={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, delay, ease: EASE }}
+    <div
+      ref={ref}
+      className={`reveal${visible ? ' is-visible' : ''}${className ? ` ${className}` : ''}`}
+      style={{ '--reveal-delay': `${delay}s` } as CSSVars}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
-// Container that staggers its <Item> children as they enter the viewport.
+/** Container that staggers its <Item> children as they enter the viewport. */
 export const Stagger: React.FC<{
   children: React.ReactNode;
   className?: string;
-  stagger?: number;
   delay?: number;
-}> = ({ children, className, stagger = 0.08, delay = 0 }) => (
-  <motion.div
-    className={className}
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true, margin: '-60px' }}
-    variants={{ hidden: {}, show: { transition: { staggerChildren: stagger, delayChildren: delay } } }}
-  >
-    {children}
-  </motion.div>
-);
-
-export const Item: React.FC<{ children: React.ReactNode; className?: string; y?: number }> = ({
-  children,
-  className,
-  y = 28,
-}) => {
-  const reduce = useReducedMotion();
+}> = ({ children, className, delay = 0 }) => {
+  const { ref, visible } = useInViewOnce<HTMLDivElement>();
   return (
-    <motion.div
-      className={className}
-      variants={{
-        hidden: reduce ? { opacity: 0 } : { opacity: 0, y, filter: 'blur(6px)' },
-        show: {
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          transition: { duration: 0.65, ease: EASE },
-        },
-      }}
+    <div
+      ref={ref}
+      className={`${visible ? 'is-visible' : ''}${className ? ` ${className}` : ''}`}
+      style={{ '--reveal-delay': `${delay}s` } as CSSVars}
     >
-      {children}
-    </motion.div>
+      {React.Children.map(children, (child, index) =>
+        React.isValidElement<{ index?: number }>(child)
+          ? React.cloneElement(child, { index })
+          : child
+      )}
+    </div>
   );
 };
 
-// Numbered editorial label above section titles, e.g. "01 / Work".
+export const Item: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  /** Injected by <Stagger>. */
+  index?: number;
+}> = ({ children, className, index = 0 }) => (
+  <div
+    className={`reveal-item${className ? ` ${className}` : ''}`}
+    style={{ '--stagger-index': index } as CSSVars}
+  >
+    {children}
+  </div>
+);
+
+/** Section label: a numbered pill plus the section name. */
 export const Eyebrow: React.FC<{ index: string; label: string; center?: boolean }> = ({
   index,
   label,
   center,
 }) => (
-  <span
-    className={`inline-flex items-center gap-3 text-xs font-semibold text-gray-500 uppercase tracking-[0.25em] ${
-      center ? 'justify-center' : ''
-    }`}
-  >
-    <span className="text-neutral-600">{index}</span>
-    <span className="w-8 h-px bg-neutral-700"></span>
-    {label}
+  <span className={`inline-flex items-center gap-2.5 ${center ? 'justify-center' : ''}`}>
+    <span className="font-mono text-[10px] font-medium text-muted bg-sunken rounded-md px-1.5 py-1 tabular-nums">
+      {index}
+    </span>
+    <span className="text-[11px] font-semibold text-muted uppercase tracking-[0.14em]">{label}</span>
   </span>
 );
 
-// Number that counts up from 0 when it scrolls into view.
-export const CountUp: React.FC<{ to: number; suffix?: string; className?: string }> = ({
-  to,
-  suffix = '',
-  className,
-}) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
-  const reduce = useReducedMotion();
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    if (reduce) {
-      setValue(to);
-      return;
-    }
-    const controls = animate(0, to, {
-      duration: 1.6,
-      ease: EASE,
-      onUpdate: (v) => setValue(Math.round(v)),
-    });
-    return () => controls.stop();
-  }, [inView, to, reduce]);
-
-  return (
-    <span ref={ref} className={className}>
-      {value}
-      {suffix}
-    </span>
-  );
-};
-
-// Scroll-scrubbed settle: scales from `from` down to 1 as the element
-// travels from the bottom of the viewport to its center (Apple-style).
-export const ScrubScale: React.FC<{ children: React.ReactNode; className?: string; from?: number }> = ({
-  children,
-  className,
-  from = 1.06,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] });
-  const scale = useTransform(scrollYProgress, [0, 1], [from, 1]);
-  return (
-    <motion.div ref={ref} style={reduce ? undefined : { scale }} className={className}>
-      {children}
-    </motion.div>
-  );
-};
-
-// Element gently follows the cursor while hovered (magnetic buttons).
-export const Magnetic: React.FC<{ children: React.ReactNode; className?: string; strength?: number }> = ({
-  children,
-  className,
-  strength = 0.25,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const x = useSpring(0, { stiffness: 220, damping: 16 });
-  const y = useSpring(0, { stiffness: 220, damping: 16 });
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (reduce || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    x.set((e.clientX - rect.left - rect.width / 2) * strength);
-    y.set((e.clientY - rect.top - rect.height / 2) * strength);
-  };
-  const onMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div ref={ref} style={{ x, y }} className={className} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
-      {children}
-    </motion.div>
-  );
-};
+/* CountUp, ScrubScale and Magnetic used to live here. Every one of their
+   call sites went away in the light rebuild, and each was the last thing
+   importing `motion/react` — a ~100 kB dependency kept alive by three
+   components nothing rendered. Removed rather than left dead. */

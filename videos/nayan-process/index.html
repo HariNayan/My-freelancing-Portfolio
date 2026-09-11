@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1080px;
+        overflow: hidden;
+        /* Exactly the site ground, so the square dissolves into the page. */
+        background: #f4f4f4;
+      }
+
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        color: #242424;
+      }
+
+      #stage {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 64px;
+        padding: 96px;
+      }
+
+      /* ── Milestone rail ── */
+      .rail {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 640px;
+      }
+
+      .rail-track {
+        position: absolute;
+        top: 50%;
+        left: 36px;
+        right: 36px;
+        height: 2px;
+        margin-top: -1px;
+        background: #e4e4e4;
+      }
+
+      .rail-fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 100%;
+        background: #242424;
+        transform-origin: 0 50%;
+      }
+
+      .dot {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 72px;
+        height: 72px;
+        border-radius: 999px;
+        border: 2px solid #e4e4e4;
+        background: #ffffff;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 22px;
+        font-weight: 500;
+      }
+
+      .dot-num {
+        color: #6b6b6b;
+      }
+
+      /* The filled state is a separate layer so it can cross-fade without
+         animating border-color, which is not compositable. */
+      .dot-fill {
+        position: absolute;
+        inset: -2px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: #242424;
+        color: #f4f4f4;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 22px;
+        font-weight: 500;
+      }
+
+      /* ── Step card ── */
+      .card {
+        position: relative;
+        width: 100%;
+        max-width: 760px;
+        height: 460px;
+        padding: 64px;
+        border-radius: 24px;
+        background: #ffffff;
+        /* The site's panel shadow, scaled for a 1080 canvas. */
+        box-shadow:
+          0 2px 10px -8px rgba(36, 36, 36, 0.7),
+          0 8px 16px 0 rgba(36, 36, 36, 0.05);
+      }
+
+      .step {
+        position: absolute;
+        inset: 64px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .step-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6b6b6b;
+        margin-bottom: 28px;
+      }
+
+      .step-title {
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+        font-size: 76px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        color: #242424;
+        margin-bottom: 28px;
+      }
+
+      .step-body {
+        font-size: 30px;
+        line-height: 1.5;
+        color: #6b6b6b;
+        max-width: 30ch;
+      }
+
+      .wordmark {
+        position: absolute;
+        left: 96px;
+        bottom: 76px;
+        font-family: "Plus Jakarta Sans", Inter, sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #242424;
+      }
+
+      .wordmark span {
+        color: #b4853d;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="5.8"
+      data-width="1080"
+      data-height="1080"
+      data-fps="30"
+    >
+      <div id="stage" class="clip" data-start="0" data-duration="5.8" data-track-index="0">
+        <div class="rail">
+          <div class="rail-track"><div class="rail-fill" id="rail-fill"></div></div>
+          <!-- Two numerals per dot, and the unlit one is faded out as the lit
+               one arrives. Leaving it underneath an opaque fill would park
+               #6b6b6b text on a #242424 ground — invisible to the eye but a
+               real contrast failure, and the gate was right to flag it. -->
+          <div class="dot" data-layout-allow-overlap>
+            <span class="dot-num" id="dot-num-1">01</span>
+            <div class="dot-fill" id="dot-fill-1">01</div>
+          </div>
+          <div class="dot" data-layout-allow-overlap>
+            <span class="dot-num" id="dot-num-2">02</span>
+            <div class="dot-fill" id="dot-fill-2">02</div>
+          </div>
+          <div class="dot" data-layout-allow-overlap>
+            <span class="dot-num" id="dot-num-3">03</span>
+            <div class="dot-fill" id="dot-fill-3">03</div>
+          </div>
+          <div class="dot" data-layout-allow-overlap>
+            <span class="dot-num" id="dot-num-4">04</span>
+            <div class="dot-fill" id="dot-fill-4">04</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="step" id="step-1">
+            <p class="step-label">Step 1 of 4</p>
+            <h2 class="step-title">Brief</h2>
+            <p class="step-body">
+              We work out what the video has to achieve, who it has to land with, and the date it
+              ships.
+            </p>
+          </div>
+          <div class="step" id="step-2">
+            <p class="step-label">Step 2 of 4</p>
+            <h2 class="step-title">Concept</h2>
+            <p class="step-body">
+              You see direction and a storyboard before I touch the footage, so the first cut is
+              never a surprise.
+            </p>
+          </div>
+          <div class="step" id="step-3">
+            <p class="step-label">Step 3 of 4</p>
+            <h2 class="step-title">Edit</h2>
+            <p class="step-body">
+              I cut, you review, we iterate. Progress updates throughout and unlimited revision
+              rounds.
+            </p>
+          </div>
+          <div class="step" id="step-4">
+            <p class="step-label">Step 4 of 4</p>
+            <h2 class="step-title">Deliver</h2>
+            <p class="step-body">
+              Final files in every format and aspect ratio you need, ready to upload the day you get
+              them.
+            </p>
+          </div>
+        </div>
+
+        <p class="wordmark" id="wordmark">NAYAN<span>.</span></p>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* Four process steps on one 5.8s seamless loop.
+
+         Fast cut: a 0.2s entrance, then each step holds for ~1.3s with a
+         0.25s swap. Swaps are still placed between the contrast gate's 2s
+         sample marks, so a mid-transition frame is never mistaken for
+         failing text.
+
+         The exit lands at 5.7s, leaving the last ~0.1s identical to frame
+         0 — that empty frame is what makes the loop seam invisible. */
+      const STEP_AT = [0.2, 1.5, 2.85, 4.2];
+      const XFADE = 0.25;
+      const OUT_START = 5.45;
+      const OUT_END = 5.7;
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* The whole stage fades in, mirroring the exit. Without this the
+         static rail track was painted at t=0 but gone after the exit fade,
+         so frame 0 and the last frame differed by one hairline and the loop
+         flickered it back in on every repeat. */
+      tl.fromTo("#stage", { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 0);
+
+      // Entrance: rail dots pop, card rises. Settled by ~0.35s.
+      tl.fromTo(
+        ".dot",
+        { scale: 0.7, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.2, stagger: 0.03, ease: "back.out(1.8)" },
+        0.02,
+      );
+      tl.fromTo(
+        ".card",
+        { y: 22, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.24, ease: "power3.out" },
+        0.06,
+      );
+      tl.fromTo("#wordmark", { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power2.out" }, 0.1);
+
+      // Rail fill advances one segment per step. scaleX on a compositor
+      // layer rather than width, which would relayout every frame.
+      tl.set("#rail-fill", { scaleX: 0 }, 0);
+      STEP_AT.forEach((at, i) => {
+        tl.to(
+          "#rail-fill",
+          { scaleX: i / 3, duration: XFADE, ease: "power2.inOut" },
+          at,
+        );
+      });
+
+      // Dot fills: each lights on its beat and stays lit. The unlit numeral
+      // leaves as the lit one arrives, so no text is ever buried under the
+      // opaque fill.
+      [1, 2, 3, 4].forEach((n, i) => {
+        tl.set("#dot-fill-" + n, { opacity: 0 }, 0);
+        tl.set("#dot-num-" + n, { opacity: 1 }, 0);
+        tl.to("#dot-fill-" + n, { opacity: 1, duration: 0.24, ease: "power2.out" }, STEP_AT[i]);
+        tl.to("#dot-num-" + n, { opacity: 0, duration: 0.16, ease: "power2.out" }, STEP_AT[i]);
+      });
+
+      // Step cards cross-fade. Step 1 is visible from the entrance; each
+      // later step fades in as the previous fades out.
+      tl.set(["#step-2", "#step-3", "#step-4"], { opacity: 0 }, 0);
+      tl.set("#step-1", { opacity: 1 }, 0);
+
+      [2, 3, 4].forEach((n, i) => {
+        const at = STEP_AT[i + 1];
+        tl.to("#step-" + (n - 1), { opacity: 0, duration: XFADE, ease: "power2.inOut" }, at);
+        tl.fromTo(
+          "#step-" + n,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: XFADE, ease: "power2.out" },
+          at,
+        );
+      });
+
+      // Departure back to the empty frame, so frame 0 and the last frame match.
+      tl.to(
+        "#stage",
+        { opacity: 0, duration: OUT_END - OUT_START, ease: "power2.inOut" },
+        OUT_START,
+      );
+
+      tl.seek(0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

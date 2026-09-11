@@ -1,194 +1,287 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   LIGHT SYSTEM — cal.com idiom
+
+   Semantic tokens rather than a numbered grey ramp, so a class
+   says what a thing IS (surface, well, hairline) instead of how
+   dark it happens to be. Registered in @theme so Tailwind emits
+   bg-surface / text-ink / border-hairline utilities.
+
+   The one adaptation: cal.com's artifacts are UI screenshots, so
+   they sit happily on a light ground. Ours are video frames, which
+   look like clippings on paper unless they're given contrast. So
+   media lives in `well` — near-black rounded panels set into the
+   light page.
+   ───────────────────────────────────────────────────────────── */
 @theme {
-  --font-sans: Inter, sans-serif;
-  --font-display: Sora, sans-serif;
-  --color-neutral-850: #1f1f1f;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", Inter, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ground: #f4f4f4;
+  --color-surface: #ffffff;
+  --color-sunken: #ebebeb;
+
+  --color-well: #0e0e0e;
+  --color-well-soft: #1a1a1a;
+  --color-well-ink: #f4f4f4;
+  --color-well-muted: #9a9a9a;
+  --color-well-line: #2a2a2a;
+
+  --color-ink: #242424;
+  --color-muted: #6b6b6b;
+  --color-faint: #9a9a9a;
+  --color-hairline: #e4e4e4;
+  --color-hairline-strong: #d4d4d4;
+
+  --color-accent: #e5a94e;
+
+  --radius-panel: 12px;
+  --radius-control: 10px;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   REFINED DARK PALETTE
-   The UI is built on the neutral/gray ramp + white/black. We remap
-   those variables (unlayered, so they beat Tailwind's @theme
-   defaults) to a refined true-neutral scale: cleaner borders,
-   deeper surface separation. gray-* is aliased to neutral-* to
-   unify the previously mixed usage into one scale.
-   ───────────────────────────────────────────────────────────── */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --color-white: #ffffff;
-  --color-black: #000000;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal-distance: 22px;
+  --reveal-duration: 0.7s;
+}
 
-  --color-neutral-50: #fafafa;
-  --color-neutral-100: #f5f5f5;
-  --color-neutral-200: #e5e5e5;
-  --color-neutral-300: #d4d4d4;
-  --color-neutral-400: #a3a3a3;
-  --color-neutral-500: #737373;
-  --color-neutral-600: #525252;
-  --color-neutral-700: #3d3d3d;
-  --color-neutral-800: #2a2a2a;
-  --color-neutral-850: #1c1c1c;
-  --color-neutral-900: #151515;
-  --color-neutral-950: #0a0a0a;
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+}
 
-  --color-gray-100: var(--color-neutral-100);
-  --color-gray-200: var(--color-neutral-200);
-  --color-gray-300: var(--color-neutral-300);
-  --color-gray-400: var(--color-neutral-400);
-  --color-gray-500: var(--color-neutral-500);
-  --color-gray-600: var(--color-neutral-600);
-  --color-gray-700: var(--color-neutral-700);
+::selection {
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
 
-  /* theme-dependent effects */
-  --hero-glow-color: #ffffff;
-  --outline-stroke: rgba(255, 255, 255, 0.26);
-  --scrollbar-track: #151515;
-  --scrollbar-thumb: #3d3d3d;
-  --scrollbar-thumb-hover: #525252;
-  --grain-opacity: 0.05;
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Inside a dark well the focus ring has to invert to stay visible. */
+.well-scope :focus-visible {
+  outline-color: var(--color-well-ink);
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
+  background: var(--color-ground);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 4px;
+  background: var(--color-hairline-strong);
+  border-radius: 5px;
+  border: 2px solid var(--color-ground);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
+  background: var(--color-faint);
 }
 
+/* Applies to anchor jumps only — it does not touch wheel or touch
+   scrolling, which stays fully native. */
 html {
   scroll-behavior: smooth;
 }
 
-/* Lenis smooth scrolling */
-html.lenis,
-html.lenis body {
-  height: auto;
+/* Keeps anchored sections clear of the fixed header when jumped to. */
+[id] {
+  scroll-margin-top: 88px;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+/* ─────────────────────────────────────────────────────────────
+   SCROLL REVEALS — CSS, not JavaScript
+   Resting state is VISIBLE; the hidden state only applies once JS
+   has proved it can run (.js-reveal on <html>). See Reveal.tsx for
+   the IntersectionObserver health check that backs this up.
+   ───────────────────────────────────────────────────────────── */
+.reveal {
+  opacity: 1;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  transition:
+    opacity var(--reveal-duration) var(--ease-out-expo),
+    transform var(--reveal-duration) var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0s);
+  /* No will-change: it promoted every unrevealed section to its own
+     compositor layer for the whole session. Opacity and transform are
+     already composited properties, so the hint bought nothing and cost
+     memory on exactly the scroll it was meant to smooth. */
 }
 
-.lenis.lenis-stopped {
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.js-reveal .reveal-item {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  transition:
+    opacity var(--reveal-duration) var(--ease-out-expo),
+    transform var(--reveal-duration) var(--ease-out-expo);
+  transition-delay: calc(var(--stagger-index, 0) * 0.06s + var(--reveal-delay, 0s));
+}
+
+.js-reveal .is-visible .reveal-item,
+.js-reveal .reveal-item.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.js-reveal .hero-word {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: hero-word-in 0.8s var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--word-index, 0) * 0.06s + 0.12s);
+}
+
+@keyframes hero-word-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PATTERNS
+   ───────────────────────────────────────────────────────────── */
+
+/* Contained white panel on the grey ground.
+
+   Measured off the reference: no border at all, 12px radius, and a
+   two-layer shadow so tight it reads as a lift rather than a drop.
+   The border I had before is what made these look outlined and flat
+   instead of floating — it's the single biggest tell. */
+.panel {
+  background: var(--color-surface);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 5px -4px rgba(36, 36, 36, 0.7),
+    0 4px 8px 0 rgba(36, 36, 36, 0.05);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BUTTONS
+
+   Measured off the reference rather than guessed. Its primary CTA is not
+   a flat black rectangle: it is a vertical gradient (#292929 → #242424)
+   with an inset white top highlight at 15%, 12px radius, 8px gap. The
+   highlight is the whole trick — it catches the top edge and gives the
+   button a lit surface instead of a hole in the page.
+
+   Same technique, this site's darker well.
+
+   The ramp is deliberately lopsided: grey holds flat for the top 85% and
+   only falls to black across the last 15%. A gradient spread over the
+   full height reads as a wash and muddies the label; concentrated at the
+   bottom edge it reads as a shadow under a lit face, which is the effect
+   the inset highlight is already selling at the top.
+   ───────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    background-image 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  background-image: linear-gradient(#2a2a2a 0%, #2a2a2a 85%, var(--color-well) 100%);
+  color: var(--color-well-ink);
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.14);
+}
+
+.btn-primary:hover {
+  background-image: linear-gradient(#333333 0%, #333333 85%, #161616 100%);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline-strong);
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+.btn-secondary:hover {
+  background: var(--color-sunken);
+  border-color: var(--color-faint);
+}
+
+/* The chevron rides in muted, not full-contrast: it marks direction
+   without competing with the label. */
+.btn .btn-chevron {
+  color: currentColor;
+  opacity: 0.5;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover .btn-chevron {
+  opacity: 0.85;
+  transform: translateX(2px);
+}
+
+/* Where a panel needs to read as an input surface rather than a card. */
+.panel-flat {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+}
+
+/* Media container.
+
+   This started out as a near-black "well" on the theory that video
+   frames need a dark surround to read on a light page. Measured
+   against the reference, that was wrong: it has zero large dark
+   areas anywhere, and three black slabs fought the whole light
+   system. The footage is already the dark element — it supplies its
+   own contrast, and the frame just has to hold a radius and clip.
+
+   The tint only shows while an image is loading. */
+.media {
+  background: var(--color-sunken);
+  border-radius: 8px; /* the reference's inner-artifact radius */
   overflow: hidden;
 }
 
-/* Outlined display type (marquee, ghost headings) */
-.text-outline {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--outline-stroke);
+/* Greyscale-until-hover client logos, as on the reference trust bar. */
+.logo-mark {
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition: filter 0.3s ease, opacity 0.3s ease;
 }
-
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-scroll {
-  animation: scroll 40s linear infinite;
-}
-
-.pause-on-hover:hover .animate-scroll {
-  animation-play-state: paused;
-}
-
-.mask-gradient {
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-/* Hero background: drifting monochrome glows + film grain */
-.hero-glow {
-  position: absolute;
-  border-radius: 9999px;
-  background: var(--hero-glow-color);
-  filter: blur(120px);
-  will-change: transform;
-}
-
-.hero-glow-1 {
-  width: 560px;
-  height: 560px;
-  top: -12%;
-  left: 10%;
-  opacity: 0.10;
-  animation: drift-1 18s ease-in-out infinite alternate;
-}
-
-.hero-glow-2 {
-  width: 460px;
-  height: 460px;
-  bottom: -15%;
-  right: 6%;
-  opacity: 0.07;
-  animation: drift-2 24s ease-in-out infinite alternate;
-}
-
-@keyframes drift-1 {
-  to { transform: translate(90px, 60px) scale(1.15); }
-}
-
-@keyframes drift-2 {
-  to { transform: translate(-80px, -50px) scale(1.1); }
-}
-
-.grain-overlay {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-repeat: repeat;
-  opacity: var(--grain-opacity);
-  pointer-events: none;
-}
-
-/* Hero work-collage: slow vertical drift */
-@keyframes collage-up {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-
-@keyframes collage-down {
-  from { transform: translateY(-50%); }
-  to { transform: translateY(0); }
-}
-
-.animate-collage {
-  animation: collage-up 70s linear infinite;
-  will-change: transform;
-}
-
-.animate-collage-rev {
-  animation: collage-down 80s linear infinite;
-  will-change: transform;
-}
-
-/* Stop the hero collage from animating once it's scrolled out of view
-   (class toggled by an IntersectionObserver) — saves background frames. */
-.collage-paused .animate-collage,
-.collage-paused .animate-collage-rev {
-  animation-play-state: paused;
+a:hover .logo-mark {
+  filter: grayscale(0);
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .animate-scroll,
-  .hero-glow-1,
-  .hero-glow-2,
-  .animate-collage,
-  .animate-collage-rev {
+  .js-reveal .reveal,
+  .js-reveal .reveal-item,
+  .js-reveal .hero-word {
+    opacity: 1;
+    transform: none;
+    transition: none;
     animation: none;
   }
 }

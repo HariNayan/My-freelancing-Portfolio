@@ -1,77 +1,90 @@
 import React from 'react';
 import { FileText, Lightbulb, Scissors, Rocket } from 'lucide-react';
-import { Reveal, Eyebrow } from './Reveal';
+import { Reveal, Stagger, Item, Eyebrow } from './Reveal';
 
 const steps = [
   {
-    id: 1,
     number: '01',
     title: 'Brief',
-    description: 'Discussing project goals, target audience, and key messaging to align on the vision.',
-    icon: FileText
+    description:
+      'We work out what the video has to achieve, who it has to land with, and the date it ships.',
+    icon: FileText,
   },
   {
-    id: 2,
     number: '02',
     title: 'Concept',
-    description: 'Creating creative direction and storyboard before production starts.',
-    icon: Lightbulb
+    description:
+      'You see direction and a storyboard before I touch the footage, so the first cut is never a surprise.',
+    icon: Lightbulb,
   },
   {
-    id: 3,
     number: '03',
     title: 'Edit',
-    description: 'Production process with updates and unlimited revision rounds.',
-    icon: Scissors
+    description:
+      'I cut, you review, we iterate. Progress updates throughout and unlimited revision rounds.',
+    icon: Scissors,
   },
   {
-    id: 4,
     number: '04',
     title: 'Deliver',
-    description: 'Final optimized files delivered in all required formats.',
-    icon: Rocket
-  }
+    description:
+      'Final files in every format and aspect ratio you need, ready to upload the day you get them.',
+    icon: Rocket,
+  },
 ];
 
-// Stacking cards: each step pins below the header while the next slides
-// over it, creating a deck that builds as you scroll.
 const Process: React.FC = () => {
   return (
-    <section id="process" className="py-16 md:py-24 xl:py-32 bg-neutral-900 border-y border-neutral-800 px-6">
-      <div className="container mx-auto max-w-5xl">
-        <Reveal className="text-center mb-12 md:mb-16">
-          <Eyebrow index="03" label="How We Work" center />
-          <h2 className="text-3xl md:text-5xl xl:text-6xl font-display font-bold text-white mt-3 mb-4">Process</h2>
-          <p className="text-gray-400 max-w-xl mx-auto">A streamlined workflow designed for speed and quality.</p>
+    <section id="process" className="bg-ground px-4 md:px-6 py-12 md:py-[72px]">
+      <div className="container mx-auto max-w-6xl">
+        <Reveal className="mb-10 md:mb-14 max-w-2xl">
+          <Eyebrow index="04" label="How it works" />
+          <h2 className="text-3xl md:text-[2.75rem] font-display font-extrabold text-ink tracking-[-0.025em] leading-[1.1] mt-5 mb-4 text-balance">
+            Process
+          </h2>
+          <p className="text-muted md:text-lg">
+            Four steps, no account managers, no surprises in the first cut.
+          </p>
         </Reveal>
 
-        <div className="relative">
+        {/* One panel, four columns divided by hairlines — nesting a card per
+            step inside a section panel would double the surfaces up. The
+            dividers switch axis with the grid: stacked on mobile, a 2x2 at
+            sm, a single row at lg. */}
+        <Stagger className="panel grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 overflow-hidden">
           {steps.map((step, index) => {
             const Icon = step.icon;
+            const divides = [
+              index > 0 ? 'border-t' : '',
+              index % 2 === 1 ? 'sm:border-l' : '',
+              index >= 2 ? 'sm:border-t' : 'sm:border-t-0',
+              'lg:border-t-0',
+              index > 0 ? 'lg:border-l' : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
+
             return (
-              <div
-                key={step.id}
-                className="sticky mb-6 md:mb-10"
-                style={{ top: `${96 + index * 28}px` }}
-              >
-                <div className="bg-neutral-850 border border-neutral-700/60 rounded-2xl p-8 md:p-14 shadow-2xl shadow-black/50 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 min-h-[40vh]">
-                  <span className="font-display font-bold text-6xl md:text-8xl text-outline shrink-0 leading-none">
-                    {step.number}
-                  </span>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center text-white shrink-0">
-                        <Icon size={26} strokeWidth={1.5} />
-                      </div>
-                      <h3 className="text-2xl md:text-4xl font-display font-bold text-white">{step.title}</h3>
-                    </div>
-                    <p className="text-gray-400 md:text-lg leading-relaxed max-w-xl">{step.description}</p>
+              <Item key={step.number} className="h-full">
+                <div
+                  className={`h-full p-6 md:p-7 border-hairline transition-colors duration-200 hover:bg-ground/50 ${divides}`}
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-mono text-[11px] font-medium text-muted bg-sunken rounded-md px-2 py-1 tabular-nums">
+                      {step.number}
+                    </span>
+                    <Icon size={17} strokeWidth={1.75} className="text-hairline-strong" />
                   </div>
+
+                  <h3 className="text-lg md:text-xl font-display font-bold text-ink mb-2.5 tracking-[-0.015em]">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed">{step.description}</p>
                 </div>
-              </div>
+              </Item>
             );
           })}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
